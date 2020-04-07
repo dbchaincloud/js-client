@@ -2,8 +2,14 @@ import Factory from './tx_factory'
 import {getPrivKey, getPubKey, getAddress} from "./key_manager"
 
 const ChainId = 'mainchain'
+var ExtraMsgConstructors = []
+var LazyFactory = null
 var MsgQueue = []
 var Mutex = true
+
+function addExtraMsgConstructors(module) {
+    ExtraMsgConstructors = ExtraMsgConstructors.concat(Object.entries(module))
+}
 
 function getWallet() {
     var privateKey = getPrivKey()
@@ -44,10 +50,12 @@ function signAndBroadcast(msgName, args, callback) {
 }
 
 async function realSignAndBroadcast(msgName, args, callback) {
-  var factory = new Factory(ChainId, getWallet())
-  var msg = factory[msgName](args)
+  if(LazyFactory == null) {
+      LazyFactory = new Factory(ChainId, getWallet(), ExtraMsgConstructors)
+  }
+  var msg = LazyFactory[msgName](args)
   var included = await msg.send()
   if(callback != null) { callback(included) }
 }
 
-export { signAndBroadcast }
+export { signAndBroadcast, addExtraMsgConstructors }

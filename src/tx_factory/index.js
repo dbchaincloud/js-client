@@ -39,11 +39,11 @@ async function queryTxInclusion (txHash, iterations = 15) {
 }
 
 export default class Factory {
-  constructor (chainId, fromWallet, extraMsgConstructors=[]) {
+  constructor (chainId, fromWallet, extraMsgConstructorList=[]) {
     this.chainId     = chainId
     this.fromWallet = fromWallet
 
-    Object.entries(MessageConstructors).concat(Object.entries(extraMsgConstructors))
+    Object.entries(MessageConstructors).concat(extraMsgConstructorList)
       .forEach(([name, messageConstructor]) => {
         this[name] = function (args) {
           const senderAddress = this.fromWallet.address

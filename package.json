@@ -1,6 +1,6 @@
 {
   "name": "dbchain-js-client",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Js client implementation of dbchain",
   "main": "index.js",
   "scripts": {
@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/dbchaincloud/js-client/issues"
   },
-  "homepage": "https://github.com/dbchaincloud/js-client#readme"
+  "homepage": "https://github.com/dbchaincloud/js-client#readme",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0"
+  }
 }

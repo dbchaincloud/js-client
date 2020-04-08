@@ -1,4 +1,4 @@
-import { signTx } from "@tendermint/sig"
+import { signTx } from "../cosmos_sig/index"
 import * as MessageConstructors from './messages'
 import { restGet, restPost } from '../rest_lib'
 

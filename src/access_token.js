@@ -6,9 +6,9 @@ function signForToken(str) {
   var privKey = getPrivKey();
   var pubKey = getPubKey();
 
-  var signature = sign(str, privKey);
+  var sigObj = sign(str, privKey);
   var encodedPubKey = bs58.encode(pubKey)
-  var encodedSig = bs58.encode(signature)
+  var encodedSig = bs58.encode(sigObj.signature)
   var result = `${encodedPubKey}:${str}:${encodedSig}`
   return result;
 }

@@ -65,7 +65,7 @@ export default class Factory {
   async send(message) {
     var tx = {
       fee: {
-        amount: [{amount:'1', denom:"dbctoken"}],
+        amount: [],
         gas:    '200000'
       },
       memo: '',

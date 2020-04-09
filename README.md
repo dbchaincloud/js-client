@@ -1,4 +1,4 @@
-##[Chinese](https://github.com/dbchaincloud/js-client/blob/master/README_ch.md)
+[中文](https://github.com/dbchaincloud/js-client/blob/master/README_ch.md)
 
 # dbchain js-client
 

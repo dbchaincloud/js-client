@@ -9,6 +9,8 @@
 库链 js-client 提供了如下功能：
 
 - 产生助记词和密钥对
+- 检查是否已有密钥对
+- 访问口令
 - 获取数据库的表
 - 获取表的选项
 - 获取表的列/字段
@@ -31,8 +33,42 @@ npm install --save dbchain-js-client
 
 ### 使用方法
 
-#### 获取数据库表
+#### 产生助记词和密钥对
+```javascript
+import { newMnemonic, createAndStoreKey } from "dbchain-js-client";
 
+const mnemonic = newMnemonic();
+// 
+const passphrase = "123345678"
+createAndStoreKey(mnemonic, passphrase)
+```
+
+#### 检查是否已有密钥对
+```javascript
+import { hasKey } from 'dbchain-js-client;
+if(!hasKey()) {
+  console.log("User needs to generate and save key pairs")
+}
+```
+
+#### 访问口令 
+```javascript
+import { hasPassphrase, savePassphrase } from 'dbchain-js-client;
+
+// when user login with a passphrase, we usually save it to browser session storage
+var passphrase = "12345678"
+if (savePassphrase(passphrase)) {
+  console.log("passphrase saved successfully");
+} else {
+  console.log("passphrase is invalid");
+}
+
+if(!hasPassphrase()) {
+  console.log("User needs to input passphrase");
+}
+```
+
+#### 获取数据库表
 ```javascript
 import { getTables } from "dbchain-js-client";
 

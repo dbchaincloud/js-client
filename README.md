@@ -1,21 +1,23 @@
 [中文](https://github.com/dbchaincloud/js-client/blob/master/README_ch.md)
 
-# dbchain js-client
+# dbChain js-client
 
 ---
 
-dbchain js-client is the JavaScript implementation of the client side library of dbchain, the blockchain database. With the js-client, developers can quickly start a dbchain application in minutes.
+dbChain js-client is the JavaScript implementation of the client side library of dbChain, the blockchain database. With the js-client, developers can quickly start a dbChain application in minutes.
 
 The js-client provides JavaScript functions for
 
-* Generating mnemonic and private/public key pairs 
-* Retrieving list of tables of a database
-* Retrieving the options of a talbe
-* Retrieving columns of a table
-* Retrieving options for a column
-* Inserting a row into a table
-* Retrieving all rows of a table
-* Searching for rows contain certain field value
+- Generating mnemonic and private/public key pairs 
+- Checking whether key exists
+- Accessing passphrase
+- Retrieving list of tables of a database
+- Retrieving the options of a talbe
+- Retrieving columns of a table
+- Retrieving options for a column
+- Inserting a row into a table
+- Retrieving all rows of a table
+- Searching for rows contain certain field value
  
 ### Install
 
@@ -32,8 +34,42 @@ npm install --save dbchain-js-client
 
 ### Usage
 
-#### Retrieving list of tables of a database
+#### Generating mnemonic and private/public key pais
+```javascript
+import { newMnemonic, createAndStoreKey } from "dbchain-js-client";
 
+const mnemonic = newMnemonic();
+// brown deliver ignore estate adjust pond final inject wear return sword silent
+const passphrase = "123345678"
+createAndStoreKey(mnemonic, passphrase)
+```
+
+#### Checking whether key exists
+```javascript
+import { hasKey } from 'dbchain-js-client;
+if(!hasKey()) {
+  console.log("User needs to generate and save key pairs")
+}
+```
+
+#### Accessing passphrase
+```javascript
+import { hasPassphrase, savePassphrase } from 'dbchain-js-client;
+
+if(!hasPassphrase()) {
+  console.log("User needs to input passphrase");
+}
+
+// when user login with a passphrase, we usually save it to browser session storage
+var passphrase = "12345678"
+if (savePassphrase(passphrase)) {
+  console.log("passphrase saved successfully");
+} else {
+  console.log("passphrase is invalid");
+}
+```
+
+#### Retrieving list of tables of a database
 ```javascript
 import { getTables } from "dbchain-js-client";
 

@@ -14,7 +14,7 @@ The js-client provides JavaScript functions for
 - Retrieving list of tables of a database
 - Retrieving the options of a talbe
 - Retrieving columns of a table
-- Retrieving options for a column
+- Retrieving options of a column
 - Inserting a row into a table
 - Retrieving all rows of a table
 - Searching for rows contain certain field value
@@ -84,3 +84,95 @@ const tables = await getTables(appCode);
 */
 ```
 
+#### Retrieving the options of a table
+```javascript
+import { getTableOptions } from "dbchain-js-client";
+
+const appCode = "DJ1PGEQ45A";
+const tableName = "supplier";
+const options = await getTableOptions(appCode, tableName);
+/*
+[
+  "public"
+]
+*/
+```
+
+#### Retrieving columns of a table
+```javascript
+import { getTable } from "dbchain-js-client";
+
+const appCode = "DJ1PGEQ45A";
+const tableName = "supplier";
+const options = await getTable(appCode, tableName);
+/*
+[
+  "name",
+  "phone",
+  "address_id"
+]
+*/
+```
+#### Retrieving options of a column
+```javascript
+import { getFieldOptions } from "dbchain-js-client";
+
+const appCode = "DJ1PGEQ45A";
+const tableName = "supplier";
+const fieldName = "phone";
+const options = await getFieldOptions(appCode, tableName, fieldName);
+/*
+[
+  "not-null"
+]
+*/
+```
+#### Inserting a row into a table
+```javascript
+import { insertRow } from "dbchain-js-client";
+
+const appCode = "DJ1PGEQ45A";
+const tableName = "supplier";
+
+var record = {};
+record.name = "Super supplier"
+record.phone = "18888888888";
+record.address_id = "5";
+
+const options = await insertRow(appCode, tableName, record, function() {
+  console.log("inserting record succeeded");
+});
+```
+
+#### Retrieving id of all rows in a table
+```javascript
+import { getAllIds } from "dbchain-js-client";
+
+const appCode = "DJ1PGEQ45A";
+const tableName = "supplier";
+const ids = await getAllIds(appCode, tableName);
+/*
+[
+  "1",
+  "2",
+  "3",
+  "4"
+]
+*/
+```
+
+#### Retrieving a row from a table
+```javascript
+import { getRow } from "dbchain-js-client";
+
+const appCode = "DJ1PGEQ45A";
+const tableName = "supplier";
+const ids = await getRow(appCode, tableName, "1");
+/*
+{
+  name: "Super supplier",
+  phone: "18888888888",
+  address_id: "5"
+}
+*/
+```

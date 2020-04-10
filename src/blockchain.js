@@ -1,11 +1,15 @@
 import Factory from './tx_factory'
 import {getPrivKey, getPubKey, getAddress} from "./key_manager"
 
-const ChainId = 'mainchain'
+var ChainId = 'mainchain'
 var ExtraMsgConstructors = []
 var LazyFactory = null
 var MsgQueue = []
 var Mutex = true
+
+function setChainId(id) {
+    ChainId = id
+}
 
 function addExtraMsgConstructors(module) {
     ExtraMsgConstructors = ExtraMsgConstructors.concat(Object.entries(module))
@@ -58,4 +62,4 @@ async function realSignAndBroadcast(msgName, args, callback) {
   if(callback != null) { callback(included) }
 }
 
-export { signAndBroadcast, addExtraMsgConstructors }
+export { signAndBroadcast, addExtraMsgConstructors, setChainId }

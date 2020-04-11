@@ -1,4 +1,4 @@
-export { setBaseUrl } from './src/rest_lib';
+export { getBaseUrl, setBaseUrl } from './src/rest_lib';
 
 export { hasKey, hasPassphrase, savePassphrase, removePassphrase, newMnemonic,
          validateMnemonic, createAndStoreKey, getAddress

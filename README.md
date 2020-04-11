@@ -19,7 +19,7 @@ The js-client provides JavaScript functions for
 - Retrieving all rows of a table
 - Searching for rows contain certain field value
  
-### Install
+## Install
 
 ```shell
 yarn add dbchain-js-client
@@ -32,7 +32,7 @@ npm install --save dbchain-js-client
 ```
 
 
-### Usage
+## Usage
 
 #### Generating mnemonic and private/public key pais
 ```javascript
@@ -176,3 +176,7 @@ const ids = await getRow(appCode, tableName, "1");
 }
 */
 ```
+
+## License
+
+dbChain js-client is licensed under the Apache-2.0 License.

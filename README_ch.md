@@ -20,7 +20,7 @@
 - 获取表的一行
 - 按字段值搜索行/记录
 
-### 安装
+## 安装
 
 ```shell
 yarn add dbchain-js-client
@@ -32,7 +32,7 @@ yarn add dbchain-js-client
 npm install --save dbchain-js-client
 ```
 
-### 使用方法
+## 使用方法
 
 #### 产生助记词和密钥对
 ```javascript
@@ -176,3 +176,6 @@ const ids = await getRow(appCode, tableName, "1");
 }
 */
 ```
+
+## 软件许可
+库链 js-client 采用Apache-2.0 软件许可。

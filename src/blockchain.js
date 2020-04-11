@@ -11,6 +11,10 @@ function setChainId(id) {
     ChainId = id
 }
 
+function getChainId() {
+    return ChainId
+}
+
 function addExtraMsgConstructors(module) {
     ExtraMsgConstructors = ExtraMsgConstructors.concat(Object.entries(module))
 }
@@ -62,4 +66,4 @@ async function realSignAndBroadcast(msgName, args, callback) {
   if(callback != null) { callback(included) }
 }
 
-export { signAndBroadcast, addExtraMsgConstructors, setChainId }
+export { signAndBroadcast, addExtraMsgConstructors, getChainId, setChainId }

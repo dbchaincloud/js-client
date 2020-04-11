@@ -1,7 +1,7 @@
 import Factory from './tx_factory'
 import {getPrivKey, getPubKey, getAddress} from "./key_manager"
 
-var ChainId = 'mainchain'
+var ChainId = 'testnet'
 var ExtraMsgConstructors = []
 var LazyFactory = null
 var MsgQueue = []

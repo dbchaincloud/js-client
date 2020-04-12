@@ -1,18 +1,26 @@
 import Factory from './tx_factory'
 import {getPrivKey, getPubKey, getAddress} from "./key_manager"
 
-var ChainId = 'testnet'
+const chainIdKey = "dbchain_chain_id";
+const defaultChainId = "testnet";
+var chainId = null
+
 var ExtraMsgConstructors = []
 var LazyFactory = null
 var MsgQueue = []
 var Mutex = true
 
 function setChainId(id) {
-    ChainId = id
+    localStorage.setItem(chainIdKey, id)
+    chainId = id
 }
 
 function getChainId() {
-    return ChainId
+    if (chainId != null) {
+        return chainId
+    }
+    chainId = localStorage.getItem(chainIdKey) || defaultChainId
+    return chainId
 }
 
 function addExtraMsgConstructors(module) {
@@ -59,7 +67,7 @@ function signAndBroadcast(msgName, args, callback) {
 
 async function realSignAndBroadcast(msgName, args, callback) {
   if(LazyFactory == null) {
-      LazyFactory = new Factory(ChainId, getWallet(), ExtraMsgConstructors)
+      LazyFactory = new Factory(getChainId(), getWallet(), ExtraMsgConstructors)
   }
   var msg = LazyFactory[msgName](args)
   var included = await msg.send()

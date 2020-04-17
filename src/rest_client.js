@@ -64,6 +64,18 @@ async function isAppUser(appCode) {
   return response.data.result;
 }
 
+async function getGroups(appCode) {
+  var uri = uriBuilder("groups", appCode)
+  var response = await restGet(uri);
+  return response.data.result;
+}
+
+async function getGroupMembers(appCode, groupName) {
+  var uri = uriBuilder("group", appCode, groupName)
+  var response = await restGet(uri);
+  return response.data.result;
+}
+
 async function getTables(appCode) {
   var uri = uriBuilder("tables", appCode)
   var response = await restGet(uri);
@@ -232,7 +244,7 @@ function uriBuilder(...args) {
 }
 
 export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser,
-         getTables, getTable, getTableOptions, getFieldOptions,
+         getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
          uploadFile, addFriend, respondFriend
 };

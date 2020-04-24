@@ -2,6 +2,7 @@ import { Base64 } from 'js-base64';
 import { restGet, restPost } from "./rest_lib";
 import { createAccessToken } from "./access_token";
 import {signAndBroadcast} from "./blockchain"
+const bs58 =  require("bs58")
 
 const queryRoot = "/dbchain";
 
@@ -128,6 +129,14 @@ async function getRow(appCode, tableName, id) {
   return response.data.result;
 }
 
+async function querier(appCode, querierObj) {
+  var query = Buffer.from(JSON.stringify(querierObj));
+  query = bs58.encode(query);
+  var uri = uriBuilder("querier", appCode, query);
+  var response = await restGet(uri);
+  return response.data.result;
+}
+
 //////////////////////////////////
 //                              //
 // other than dbchain queries //
@@ -246,5 +255,5 @@ function uriBuilder(...args) {
 export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
-         uploadFile, addFriend, respondFriend
+         uploadFile, addFriend, respondFriend, querier
 };

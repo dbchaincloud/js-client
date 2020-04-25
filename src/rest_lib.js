@@ -17,6 +17,16 @@ function getBaseUrl() {
   return baseUrl
 }
 
+function getIpfsUrl(cid) {
+  var url = getBaseUrl()
+  if (url.slice(-1) == '/') {
+    url = url + "ipfs/"
+  } else {
+    url = url + "/ipfs/"
+  }
+  return url + cid
+},
+
 async function restGet(url) {
   return await axios.get(getBaseUrl() + url)
 }
@@ -25,4 +35,4 @@ async function restPost(url, data, config) {
   return await axios.post(getBaseUrl() + url, data, config)
 }
 
-export { getBaseUrl, setBaseUrl, restGet, restPost }
+export { getBaseUrl, setBaseUrl, getIpfsUrl, restGet, restPost }

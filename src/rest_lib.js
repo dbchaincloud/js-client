@@ -1,7 +1,7 @@
 const axios = require('axios').default;
 
-const baseUrlKey = "dbchan_base_url";
-const defaultBaseUrl = "https://testnet.dbchain.cloud/relay";
+const baseUrlKey = "dbchain_base_url";
+const defaultBaseUrl = "/relay";
 var baseUrl = null;
 
 function setBaseUrl(url) {

@@ -167,7 +167,7 @@ import { getRow } from "dbchain-js-client";
 
 const appCode = "DJ1PGEQ45A";
 const tableName = "supplier";
-const ids = await getRow(appCode, tableName, "1");
+const record = await getRow(appCode, tableName, "1");
 /*
 {
   name: "Super supplier",

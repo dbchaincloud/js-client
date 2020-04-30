@@ -9,6 +9,7 @@ const handler = {
       case 'equal':
       case 'select':
       case 'findFirst':
+      case 'singleValue':
       case 'val':
       case 'proxyKeeper':
         return Reflect.get(...arguments);
@@ -33,10 +34,12 @@ class InternalQuerier {
   constructor (appCode) {
     this.appCode = appCode;
     this.commands = [];
+    this.singleValue = false;
     this.proxyKeeper = null;
   }
 
   table(tableName) {
+    this.singleValue = false;
     this.commands.push({
       method: "table",
       table: tableName
@@ -70,6 +73,7 @@ class InternalQuerier {
   }
 
   findFirst() {
+    this.singleValue = true;
     this.commands.push({
       method: "first",
     });
@@ -85,7 +89,11 @@ class InternalQuerier {
 
   async val() {
     var result = await querier(this.appCode, this.commands);
-    return result ;
+    if (result.length > 0 && this.singleValue) {
+        return result[0]
+    } else {
+        return result ;
+    }
   }
 }
 

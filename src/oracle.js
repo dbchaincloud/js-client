@@ -21,6 +21,19 @@ async function verifyVerificationCode(mobile, code) {
   return response.data.result
 }
 
+async function verifyIdCard(name, idNumber) {
+  var uri = uriBuilder("verify_name_and_id_number", name, idNumber);
+  var response = await restGet(uri);
+  return response.data.result
+}
+
+async function verifyCorpInfo(corpName, regNumber, creditCode) {
+  var uri = uriBuilder("verify_corp_info", corpName, regNumber, creditCode);
+  var response = await restGet(uri);
+  return response.data.result
+}
+
+
 //////////////////////
 //                  //
 // helper functions //
@@ -37,4 +50,4 @@ function uriBuilder(...args) {
   return args.join("/");
 }
 
-export { sendVerificationCode, verifyVerificationCode };
+export { sendVerificationCode, verifyVerificationCode, verifyIdCard, verifyCorpInfo };

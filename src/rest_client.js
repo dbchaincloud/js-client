@@ -111,6 +111,20 @@ async function getFieldOptions(appCode, tableName, fieldName) {
   return response.data.result;
 }
 
+async function getInsertFilter(appCode, tableName) {
+  var uri = uriBuilder("tables", appCode, tableName);
+  var response = await restGet(uri);
+  var filter = response.data.result.filter;
+  return filter;
+}
+
+async function getTrigger(appCode, tableName) {
+  var uri = uriBuilder("tables", appCode, tableName);
+  var response = await restGet(uri);
+  var trigger = response.data.result.trigger;
+  return trigger;
+}
+
 async function getAllIds(appCode, tableName) {
   var uri = uriBuilder("find_all", appCode, tableName)
   var response = await restGet(uri);
@@ -139,7 +153,7 @@ async function querier(appCode, querierObj) {
 
 //////////////////////////////////
 //                              //
-// other than dbchain queries //
+// other than dbchain queries   //
 //                              //
 //////////////////////////////////
 
@@ -254,6 +268,7 @@ function uriBuilder(...args) {
 
 export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
+         getInsertFilter, getTrigger,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
          uploadFile, addFriend, respondFriend, querier
 };

@@ -1,4 +1,5 @@
 import { querier } from './rest_client'
+import { getAddress } from './key_manager'
 
 const handler = {
   get: function(target, prop) {
@@ -9,12 +10,19 @@ const handler = {
       case 'equal':
       case 'select':
       case 'findFirst':
+      case 'findLast':
       case 'singleValue':
       case 'val':
       case 'proxyKeeper':
         return Reflect.get(...arguments);
+      case 'own':
+        target.ownAddress();
+        return target.proxyKeeper
       case 'first':
         target.findFirst();
+        return target.proxyKeeper
+      case 'last':
+        target.findLast();
         return target.proxyKeeper
       default:
         target.table(prop);
@@ -63,6 +71,15 @@ class InternalQuerier {
     return this.proxyKeeper;
   }
 
+  ownAddress() {
+    this.commands.push({
+      method: "equal",
+      field: "created_by",
+      value: getAddress()
+    });
+    return this.proxyKeeper;
+  }
+
   equal(fieldName, value) {
     this.commands.push({
       method: "equal",
@@ -80,7 +97,8 @@ class InternalQuerier {
     return this.proxyKeeper;
   }
 
-  last() {
+  findLast() {
+    //this.singleValue = true;
     this.commands.push({
       method: "last",
     });

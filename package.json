@@ -1,6 +1,6 @@
 {
   "name": "dbchain-js-client",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "Javascript client implementation with orm for dbChain cloud service",
   "main": "index.js",
   "scripts": {

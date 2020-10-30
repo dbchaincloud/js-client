@@ -71,6 +71,13 @@ async function getGroups(appCode) {
   return response.data.result;
 }
 
+async function getGroupMemo(appCode, groupName) {
+  var uri = uriBuilder("group_memo", appCode, groupName)
+:
+  var response = await restGet(uri);
+  return response.data.result;
+}
+
 async function getGroupMembers(appCode, groupName) {
   var uri = uriBuilder("group", appCode, groupName)
   var response = await restGet(uri);

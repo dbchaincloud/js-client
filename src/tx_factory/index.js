@@ -51,7 +51,7 @@ export default class Factory {
 
           return {
             message,
-            send: () => this.send(message)
+            send: () => this.send([message])
           }
         }
       })
@@ -62,14 +62,14 @@ export default class Factory {
     return account.data.result.value
   } 
 
-  async send(message) {
+  async send(messages) {
     var tx = {
       fee: {
         amount: [],
         gas:    '200000'
       },
       memo: '',
-      msg: [ message ]
+      msg: messages
     };
 
     var account = await this.getAccount()

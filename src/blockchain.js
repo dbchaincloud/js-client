@@ -37,13 +37,28 @@ function getWallet() {
 
 async function work() {
     var job = MsgQueue.shift()
+    var batch = []
     while (job != null) {
+        batch.push(job)
+
+        let callback = job.msg[2]
+        if (typeof(callback) == "function" || (typeof(callback) == "boolean" && callback)) {
+            try {
+                await realSignAndBroadcast(batch)
+            } catch(e) {
+                console.log("Aocheesh")
+            }
+            batch = []
+        }
+        job = MsgQueue.shift()
+    }
+    // just in case the last batch is not empty
+    if (batch.length > 0) {
         try {
-            await realSignAndBroadcast(...job.msg)
+            await realSignAndBroadcast(batch)
         } catch(e) {
             console.log("Aocheesh")
         }
-        job = MsgQueue.shift()
     }
 }
 
@@ -58,20 +73,28 @@ async function startWorking() {
     }
 }
 
+// when callback is a function or the true value of boolean,
+// we trigger the worker to act
 function signAndBroadcast(msgName, args, callback) {
     let msg = {msg: [msgName, args, callback]}
     MsgQueue.push(msg)
-    // trigger the worker to act
-    startWorking()
+    if (typeof(callback) == "function" || (typeof(callback) == "boolean" && callback)) {
+        startWorking()
+    }
 }
 
-async function realSignAndBroadcast(msgName, args, callback) {
-  if(LazyFactory == null) {
-      LazyFactory = new Factory(getChainId(), getWallet(), ExtraMsgConstructors)
-  }
-  var msg = LazyFactory[msgName](args)
-  var included = await msg.send()
-  if(callback != null) { callback(included) }
+async function realSignAndBroadcast(batch) { //msgName, args, callback) {
+    if(LazyFactory == null) {
+        LazyFactory = new Factory(getChainId(), getWallet(), ExtraMsgConstructors)
+    }
+    let callback = null
+    let msgs = batch.map(function(job) {
+        let [msgName, args, clbk] = job.msg
+        callback = clbk
+        return(LazyFactory[msgName](args))
+    })
+    let included = await LazyFactory.send(msgs.map(x => x.message))
+    if(typeof(callback) == "function") { callback(included) }
 }
 
 export { signAndBroadcast, addExtraMsgConstructors, getChainId, setChainId }

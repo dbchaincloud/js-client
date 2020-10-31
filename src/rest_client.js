@@ -49,8 +49,8 @@ async function getApp(appCode) {
   return response.data.result;
 }
 
-async function getApps() {
-  var appCode = await getAppCode() || [];
+async function getApps(adminOnly=false) {
+  var appCode = await getAppCode(adminOnly) || [];
   var apps = [];
   for (var i = 0; i < appCode.length; i += 1) {
     var app = await getApp(appCode[i]);

@@ -48,9 +48,12 @@ async function getApp(appCode) {
   var response = await restGet(uri);
   return response.data.result;
 }
-
-async function getApps() {
-  var appCode = await getAppCode() || [];
+/*
+ * 加参数，传true则获取所有我是管理员的应用 传false或者不传则获取该链所有应用
+ * 
+ **/
+async function getApps(adminOnly=false) {
+  var appCode = await getAppCode(adminOnly) || [];
   var apps = [];
   for (var i = 0; i < appCode.length; i += 1) {
     var app = await getApp(appCode[i]);

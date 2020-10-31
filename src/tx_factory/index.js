@@ -66,7 +66,7 @@ export default class Factory {
     var tx = {
       fee: {
         amount: [],
-        gas:    '200000'
+        gas:    '2000000'
       },
       memo: '',
       msg: messages

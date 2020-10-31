@@ -73,7 +73,6 @@ async function getGroups(appCode) {
 
 async function getGroupMemo(appCode, groupName) {
   var uri = uriBuilder("group_memo", appCode, groupName)
-:
   var response = await restGet(uri);
   return response.data.result;
 }
@@ -257,6 +256,13 @@ async function uploadFile(file) {
     return(response.data.result)
 }
 
+async function commit(callback) {
+    await signAndBroadcast(
+        null,
+        null,
+        callback
+    );
+}
 //////////////////////
 //                  //
 // helper functions //
@@ -275,7 +281,7 @@ function uriBuilder(...args) {
 
 export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
-         getInsertFilter, getTrigger,
+         getInsertFilter, getTrigger, getGroupMemo,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
-         uploadFile, addFriend, respondFriend, querier
+         uploadFile, addFriend, respondFriend, commit, querier
 };

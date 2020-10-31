@@ -88,10 +88,13 @@ async function realSignAndBroadcast(batch) { //msgName, args, callback) {
         LazyFactory = new Factory(getChainId(), getWallet(), ExtraMsgConstructors)
     }
     let callback = null
-    let msgs = batch.map(function(job) {
+    let msgs = []
+    batch.forEach(function(job) {
         let [msgName, args, clbk] = job.msg
         callback = clbk
-        return(LazyFactory[msgName](args))
+        if(msgName) {
+            msgs.push(LazyFactory[msgName](args))
+        }
     })
     let included = await LazyFactory.send(msgs.map(x => x.message))
     if(typeof(callback) == "function") { callback(included) }

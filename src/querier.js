@@ -98,6 +98,7 @@ class InternalQuerier {
     if(!Array.isArray(value))return "格式有误"
     for (let i = 0; i < value.length; i++) {
       const element = value[i];
+      if(!element[0]||!element[1])continue;
       this.commands.push({
         method: "equal",
         field: element[0],

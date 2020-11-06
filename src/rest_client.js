@@ -48,10 +48,11 @@ async function getApp(appCode) {
   var response = await restGet(uri);
   return response.data.result;
 }
-/*
- * 加参数，传true则获取所有我是管理员的应用 传false或者不传则获取该链所有应用
- * 
- **/
+/**
+ * If I pass true, I get all the applications that I'm an administrator. If I pass false or if I don't pass, I get all the applications in the chain
+ * @param {Boolean} adminOnly true or false
+ * @returns {Array} Applications I manage (I create or I am an administrator) 
+ */
 async function getApps(adminOnly=false) {
   var appCode = await getAppCode(adminOnly) || [];
   var apps = [];
@@ -98,10 +99,25 @@ async function getTableOptions(appCode, tableName) {
   return response.data.result;
 }
 
-async function getTable(appCode, tableName) {
+/**
+ * Query the attributes attached to the table
+ * @param {String} appCode this appCode
+ * @param {String} tableName The name of the table to query
+ * @param {String} name To query the value, can pass or not pass, do not pass or return all，options：['fields','filter','momes','name','owner','trigger']
+ * @returns Returns the corresponding property or all properties.  Object or Array
+ */
+async function getTableRaw(appCode, tableName,name='') {
   var uri = uriBuilder("tables", appCode, tableName);
   var response = await restGet(uri);
-  var fields = response.data.result.fields;
+  console.log(response)
+  if(name){
+    return response.data.result[name];
+  }
+  return response.data.result;
+}
+
+async function getTable(appCode, tableName) {
+  var fields= await getTableRaw(appCode, tableName,'fields');
   var result = [];
   for (var i = 0; i < fields.length; i++) {
     var f = fields[i];

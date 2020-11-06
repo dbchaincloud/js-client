@@ -216,6 +216,19 @@ async function addFriend(myName, friendAddr, friendName, callback) {
     );
 }
 
+async function dropFriend(friendAddr, callback) {
+    if (friendAddr == null) {
+      return
+    }
+    await signAndBroadcast(
+        'MsgDropFriend',
+        {
+            friendAddr
+        },
+        callback
+    );
+}
+
 async function respondFriend(friendAddr, action, callback) {
     if (friendAddr == null) {
       return
@@ -286,5 +299,5 @@ export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getInsertFilter, getTrigger, getGroupMemo,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
-         uploadFile, addFriend, respondFriend, commit, querier
+         uploadFile, addFriend, dropFriend, respondFriend, commit, querier
 };

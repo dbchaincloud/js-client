@@ -48,7 +48,10 @@ async function getApp(appCode) {
   var response = await restGet(uri);
   return response.data.result;
 }
-
+/*
+ * 加参数，传true则获取所有我是管理员的应用 传false或者不传则获取该链所有应用
+ * 
+ **/
 async function getApps(adminOnly=false) {
   var appCode = await getAppCode(adminOnly) || [];
   var apps = [];
@@ -213,6 +216,19 @@ async function addFriend(myName, friendAddr, friendName, callback) {
     );
 }
 
+async function dropFriend(friendAddr, callback) {
+    if (friendAddr == null) {
+      return
+    }
+    await signAndBroadcast(
+        'MsgDropFriend',
+        {
+            friendAddr
+        },
+        callback
+    );
+}
+
 async function respondFriend(friendAddr, action, callback) {
     if (friendAddr == null) {
       return
@@ -283,5 +299,5 @@ export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getInsertFilter, getTrigger, getGroupMemo,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
-         uploadFile, addFriend, respondFriend, commit, querier
+         uploadFile, addFriend, dropFriend, respondFriend, commit, querier
 };

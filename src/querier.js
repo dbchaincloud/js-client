@@ -8,6 +8,7 @@ const handler = {
       case 'commands':
       case 'find':
       case 'equal':
+      case 'equalAll':
       case 'select':
       case 'findFirst':
       case 'findLast':
@@ -86,6 +87,25 @@ class InternalQuerier {
       field: fieldName,
       value: value
     });
+    return this.proxyKeeper;
+  }
+  
+  /**
+   * 批量添加数组对象参数 用于批量添加搜索条件时
+   * @param {Array} value 批量添加数组对象参数,其格式为 [['name1','value1'],['name2','value2'],...]
+   */
+  equalAll(value=[['', '']]) {
+    if(!Array.isArray(value))return "格式有误"
+    for (let i = 0; i < value.length; i++) {
+      const element = value[i];
+      if(!element[0]||!element[1])continue;
+      this.commands.push({
+        method: "equal",
+        field: element[0],
+        value: element[1]
+      });
+    }
+    
     return this.proxyKeeper;
   }
 

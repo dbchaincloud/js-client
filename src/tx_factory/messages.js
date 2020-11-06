@@ -17,6 +17,21 @@ export function MsgAddFriend(
   }
 }
 
+export function MsgDropFriend(
+  senderAddress,
+  {
+    friendAddr
+  }
+) {
+  return {
+    type: "dbchain/DropFriend",
+    value: {
+      friend_addr: friendAddr,
+      owner: senderAddress
+    }
+  }
+}
+
 export function MsgRespondFriend(
   senderAddress,
   {

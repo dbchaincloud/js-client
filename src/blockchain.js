@@ -46,7 +46,7 @@ async function work() {
             try {
                 await realSignAndBroadcast(batch)
             } catch(e) {
-                console.log("Aocheesh")
+                console.log("Aocheesh: ", e)
             }
             batch = []
         }
@@ -57,7 +57,7 @@ async function work() {
         try {
             await realSignAndBroadcast(batch)
         } catch(e) {
-            console.log("Aocheesh")
+            console.log("Aocheesh: ", e)
         }
     }
 }

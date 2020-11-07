@@ -48,10 +48,11 @@ async function getApp(appCode) {
   var response = await restGet(uri);
   return response.data.result;
 }
-/*
- * 加参数，传true则获取所有我是管理员的应用 传false或者不传则获取该链所有应用
- * 
- **/
+/**
+ * If I pass true, I get all the applications that I'm an administrator. If I pass false or if I don't pass, I get all the applications in the chain
+ * @param {Boolean} adminOnly true or false
+ * @returns {Array} Applications I manage (I create or I am an administrator)
+ */
 async function getApps(adminOnly=false) {
   var appCode = await getAppCode(adminOnly) || [];
   var apps = [];
@@ -301,7 +302,7 @@ function uriBuilder(...args) {
   return args.join("/");
 }
 
-export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin
+export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getInsertFilter, getTrigger, getGroupMemo,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,

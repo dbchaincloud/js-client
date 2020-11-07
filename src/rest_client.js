@@ -105,10 +105,24 @@ async function getTableOptions(appCode, tableName) {
   return response.data.result;
 }
 
-async function getTable(appCode, tableName) {
+/**
+ * Query the attributes attached to the table
+ * @param {String} appCode this appCode
+ * @param {String} tableName The name of the table to query
+ * @param {String} name To query the value, can pass or not pass, do not pass or return all，options：['fields','filter','momes','name','owner','trigger']
+ * @returns Returns the corresponding property or all properties.  Object or Array
+ */
+async function getTableRaw(appCode, tableName, name='') {
   var uri = uriBuilder("tables", appCode, tableName);
   var response = await restGet(uri);
-  var fields = response.data.result.fields;
+  if(name){
+    return response.data.result[name];
+  }
+  return response.data.result;
+}
+
+async function getTable(appCode, tableName) {
+  var fields= await getTableRaw(appCode, tableName,'fields');
   var result = [];
   for (var i = 0; i < fields.length; i++) {
     var f = fields[i];
@@ -304,7 +318,7 @@ function uriBuilder(...args) {
 
 export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
-         getInsertFilter, getTrigger, getGroupMemo,
+         getInsertFilter, getTrigger, getGroupMemo, getTableRaw,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
          uploadFile, addFriend, dropFriend, respondFriend, commit, querier
 };

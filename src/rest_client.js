@@ -62,6 +62,12 @@ async function getApps(adminOnly=false) {
   return apps;
 }
 
+async function isSysAdmin() {
+  var uri = uriBuilder("is_sys_admin");
+  var response = await restGet(uri);
+  return response.data.result;
+}
+
 async function isAppUser(appCode) {
   var uri = uriBuilder("is_app_user", appCode);
   var response = await restGet(uri);
@@ -295,7 +301,7 @@ function uriBuilder(...args) {
   return args.join("/");
 }
 
-export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser,
+export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getInsertFilter, getTrigger, getGroupMemo,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,

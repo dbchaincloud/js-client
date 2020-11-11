@@ -8,7 +8,8 @@ const handler = {
       case 'commands':
       case 'find':
       case 'equal':
-      case 'equalAll':
+      case 'where':
+      case 'compareAll':
       case 'select':
       case 'findFirst':
       case 'findLast':
@@ -91,19 +92,38 @@ class InternalQuerier {
   }
   
   /**
-   * 批量添加数组对象参数 用于批量添加搜索条件时
-   * @param {Array} value 批量添加数组对象参数,其格式为 [['name1','value1'],['name2','value2'],...]
+   * 
+   * @param {String} fieldName The name of the field to query
+   * @param {String} value The value of the field to query
+   * @param {String} symbol The contrast symbol to query.  ('>','>=','=','<','<=','≠')
    */
-  equalAll(value=[['', '']]) {
-    if(!Array.isArray(value))return "格式有误"
+  where(fieldName, value, operator) {
+    let obj = {
+      method: "where",
+      field: fieldName,
+      value: value,
+      operator: operator
+    }
+    this.commands.push(obj);
+    return this.proxyKeeper;
+  }
+
+  /** 
+   * Batch-add array object parameters are used when batch-add search criteria
+   * @param {Array} value Batch add array object parameters, whose format is [['name1','value1'],['name2','value2','>'],...]
+   */
+  compareAll(value = [['', '', '']]){
+    if (!Array.isArray(value)) return "格式有误"
     for (let i = 0; i < value.length; i++) {
       const element = value[i];
-      if(!element[0]||!element[1])continue;
-      this.commands.push({
-        method: "equal",
+      if (!element[0] || !element[1]) continue;
+      let obj = {
+        method: element[2] ? 'where' : "equal",
         field: element[0],
         value: element[1]
-      });
+      };
+      element[2] ? obj.operator = element[2] : null;
+      this.commands.push(obj);
     }
     
     return this.proxyKeeper;

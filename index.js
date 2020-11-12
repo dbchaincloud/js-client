@@ -10,3 +10,4 @@ export * from './src/profile';
 export * from './src/friends';
 export * from './src/blockchain';
 export * from './src/querier';
+export * from './src/validate'

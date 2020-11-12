@@ -75,18 +75,20 @@ class InternalQuerier {
 
   ownAddress() {
     this.commands.push({
-      method: "equal",
+      method: "where",
       field: "created_by",
-      value: getAddress()
+      value: getAddress(),
+      operator: '='
     });
     return this.proxyKeeper;
   }
 
   equal(fieldName, value) {
     this.commands.push({
-      method: "equal",
+      method: "where",
       field: fieldName,
-      value: value
+      value: value,
+      operator: '='
     });
     return this.proxyKeeper;
   }

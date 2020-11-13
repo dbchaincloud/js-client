@@ -318,7 +318,7 @@ function uriBuilder(...args) {
 
 export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
-         getInsertFilter, getTrigger, getGroupMemo, getTableRaw,
+         getInsertFilter, getTrigger, getGroupMemo, getTableRaw, uriBuilder,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
          uploadFile, addFriend, dropFriend, respondFriend, commit, querier
 };

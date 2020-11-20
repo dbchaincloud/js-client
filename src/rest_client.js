@@ -155,6 +155,11 @@ async function getTrigger(appCode, tableName) {
   return trigger;
 }
 
+async function getTableMemo(appCode, tableName) {
+  var memo = await getTableRaw(appCode, tableName,'memo');
+  return memo;
+}
+
 async function getAllIds(appCode, tableName) {
   var uri = uriBuilder("find_all", appCode, tableName)
   var response = await restGet(uri);
@@ -318,7 +323,7 @@ function uriBuilder(...args) {
 
 export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
-         getInsertFilter, getTrigger, getGroupMemo, getTableRaw, uriBuilder,
+         getInsertFilter, getTrigger, getTableMemo, getGroupMemo, getTableRaw, uriBuilder,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
          uploadFile, addFriend, dropFriend, respondFriend, commit, querier
 };

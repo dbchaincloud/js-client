@@ -179,10 +179,9 @@ async function getRow(appCode, tableName, id) {
 }
 
 async function canInsertRow(appCode, tableName, record) {
-  var recordJson = Buffer.from(JSON.stringify(querierObj));
-  recordJsonBase58 = bs58.encode(recordJson);
+  var recordJson = Buffer.from(JSON.stringify(record));
+  var recordJsonBase58 = bs58.encode(recordJson);
   var uri = uriBuilder("can_insert_row", appCode, tableName, recordJsonBase58);
-
   var response = await restGet(uri);
   if (response.data.result == null) {
     return [];
@@ -337,6 +336,6 @@ function uriBuilder(...args) {
 export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getInsertFilter, getTrigger, getTableMemo, getGroupMemo, getTableRaw, uriBuilder,
-         getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken,
+         getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken, canInsertRow,
          uploadFile, addFriend, dropFriend, respondFriend, commit, querier
 };

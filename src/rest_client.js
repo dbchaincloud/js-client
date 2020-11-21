@@ -178,6 +178,19 @@ async function getRow(appCode, tableName, id) {
   return response.data.result;
 }
 
+async function canInsertRow(appCode, tableName, record) {
+  var recordJson = Buffer.from(JSON.stringify(querierObj));
+  recordJsonBase58 = bs58.encode(recordJson);
+  var uri = uriBuilder("can_insert_row", appCode, tableName, recordJsonBase58);
+
+  var response = await restGet(uri);
+  if (response.data.result == null) {
+    return [];
+  } else {
+    return response.data.result;
+  }
+}
+
 async function querier(appCode, querierObj) {
   var query = Buffer.from(JSON.stringify(querierObj));
   query = bs58.encode(query);

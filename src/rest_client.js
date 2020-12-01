@@ -12,6 +12,12 @@ const queryRoot = "/dbchain";
 //                   //
 ///////////////////////
 
+async function checkChainId(chainId) {
+  var uri = uriBuilder("check_chain_id", chainId);
+  var response = await restGet(uri);
+  return response.data.result;
+}
+
 async function getFriends() {
   var uri = uriBuilder("friends");
   var response = await restGet(uri);
@@ -333,7 +339,7 @@ function uriBuilder(...args) {
   return args.join("/");
 }
 
-export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin,
+export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin, checkChainId,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getInsertFilter, getTrigger, getTableMemo, getGroupMemo, getTableRaw, uriBuilder,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken, canInsertRow,

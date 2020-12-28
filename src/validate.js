@@ -28,15 +28,24 @@ async function detectChain(url = getBaseUrl(), chainId = getChainId()) {
     let oldChainId = getChainId();
     setBaseUrl(url)
     setChainId(chainId)
-    try {
-        let isChainId =await checkChainId(chainId);
-        if(isChainId==undefined)return {status:false,content:'当前访参无法访问，请检查'};
-        if(!isChainId)return {status:false,content:'当前chainId与访参不对应，请检查'};
-        return {status:true,content:''};
-    } catch (error) {
+    function resetBase() {
         setBaseUrl(oldUrl)
         setChainId(oldChainId)
-        return {status:false,content:'当前访参无法访问，请检查'};
+    }
+    try {
+        let isChainId = await checkChainId(chainId);
+        if (isChainId == undefined) {
+            resetBase()
+            return { status: false, content: '当前访参无法访问，请检查访参' };
+        }
+        if (!isChainId) {
+            resetBase()
+            return { status: false, content: '当前chainId与访参不对应，请检查' }
+        };
+        return { status: true, content: '' };
+    } catch (error) {
+        resetBase()
+        return { status: false, content: '当前访参无法访问，请检查' };
     }
 }
 

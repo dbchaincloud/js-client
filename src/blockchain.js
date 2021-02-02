@@ -23,6 +23,11 @@ function getChainId() {
     return chainId
 }
 
+function setLazyFactory(){
+    console.log(LazyFactory)
+    LazyFactory=null;
+}
+
 function addExtraMsgConstructors(module) {
     ExtraMsgConstructors = ExtraMsgConstructors.concat(Object.entries(module))
 }
@@ -100,4 +105,4 @@ async function realSignAndBroadcast(batch) { //msgName, args, callback) {
     if(typeof(callback) == "function") { callback(included) }
 }
 
-export { signAndBroadcast, addExtraMsgConstructors, getChainId, setChainId }
+export { signAndBroadcast, addExtraMsgConstructors, getChainId, setChainId, setLazyFactory}

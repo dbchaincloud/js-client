@@ -70,7 +70,6 @@ function hasKey() {
 
 function createAndStoreKey(mnemonic, passphrase) {
   const { address, privateKey, publicKey } = createWalletFromMnemonic(mnemonic, "")
-
   var encryptedPrivKey = aesEncrypt(toHexString(privateKey), passphrase);
   var trio = [encryptedPrivKey, toHexString(publicKey), address]
 

@@ -339,9 +339,50 @@ function uriBuilder(...args) {
   return args.join("/");
 }
 
+/**
+ * Executes the current library to specify a custom function
+ * @param {String} appCode Your appCode
+ * @param {String} FunctionName Custom function name
+ * @param {Array} Argument ask sb to do sth ;
+ * @param {Function} callback The callback function that fires after execution
+ */
+ async function callFunction(appCode, FunctionName, Argument = [], callback) {
+  let data = JSON.stringify(Argument)
+
+  await signAndBroadcast(
+    'MsgCallFunction',
+    {
+      appCode,
+      function_name: FunctionName,
+      argument: data
+    },
+    callback
+  );
+}
+
+/**
+ * Executes the current library to specify a custom function
+ * @param {String} appCode Your appCode
+ * @param {String} FunctionName Custom function name
+ * @param {Array} Argument ask sb to do sth ;
+ * @param {Function} callback The callback function that fires after execution
+ */
+async function callCustomQuerier(appCode, FunctionName, Argument = [], callback) {
+  let query = '';
+  Argument[1].forEach(element => {
+    query += bs58.encode(Buffer.from(element)) + '/'
+  });
+  let bs = query.substring(0, query.length - 1);
+  let bss = bs58.encode(Buffer.from(bs))
+  var uri = uriBuilder("call-custom-querier", appCode, FunctionName, bss)
+  var response = await restGet(uri);
+  return response.data.result;
+}
+
+
 export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin, checkChainId,
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getInsertFilter, getTrigger, getTableMemo, getGroupMemo, getTableRaw, uriBuilder,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken, canInsertRow,
-         uploadFile, addFriend, dropFriend, respondFriend, commit, querier
+         uploadFile, addFriend, dropFriend, respondFriend, commit, querier, callFunction ,callCustomQuerier
 };

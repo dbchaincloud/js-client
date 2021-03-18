@@ -1,6 +1,7 @@
 import { signTx } from "../cosmos_sig/index"
 import * as MessageConstructors from './messages'
 import { restGet, restPost } from '../rest_lib'
+import {uriBuilder } from "../rest_client"
 
 function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -13,10 +14,15 @@ async function sleep(fn, ...args) {
 
 async function txIncludedInBlock(txHash) {
   try {
-    let response = await restGet(`/txs/${txHash}`)
-    if (response.status >= 200 && response.status < 300) {
+    var uri = uriBuilder("tx-simple-result",  txHash);
+    let response = await restGet(uri)
+    if (response.data.result.state=='success') {
       return true
-    } else {
+    }
+    if (response.data.result.state=='fail') {
+      return response
+    }
+     else {
       return false
     }
   } catch(err) {
@@ -26,6 +32,9 @@ async function txIncludedInBlock(txHash) {
 
 async function queryTxInclusion (txHash, iterations = 15) {
   let included  = await txIncludedInBlock(txHash)
+  if(typeof(included)=='object'){
+    return included;
+  }
   if (included) {
     return true
   }

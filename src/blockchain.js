@@ -23,8 +23,7 @@ function getChainId() {
     return chainId
 }
 
-function setLazyFactory(){
-    console.log(LazyFactory)
+function resetLazyFactory(){
     LazyFactory=null;
 }
 
@@ -105,4 +104,4 @@ async function realSignAndBroadcast(batch) { //msgName, args, callback) {
     if(typeof(callback) == "function") { callback(included) }
 }
 
-export { signAndBroadcast, addExtraMsgConstructors, getChainId, setChainId, setLazyFactory}
+export { signAndBroadcast, addExtraMsgConstructors, getChainId, setChainId, resetLazyFactory}

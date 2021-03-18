@@ -1,7 +1,6 @@
 const CryptoJS = require("crypto-js");
 import { generateMnemonic, validateMnemonic as bip39ValidateMnemonic } from 'bip39'
 import  { createWalletFromMnemonic } from "./cosmos_sig/index"
-import {setLazyFactory} from "./blockchain"
 
 const PassphraseKey = 'passphrase'
 const StorageKey    = 'dbchainwallet'
@@ -70,7 +69,6 @@ function hasKey() {
 }
 
 function createAndStoreKey(mnemonic, passphrase) {
-  setLazyFactory()
   const { address, privateKey, publicKey } = createWalletFromMnemonic(mnemonic, "")
   var encryptedPrivKey = aesEncrypt(toHexString(privateKey), passphrase);
   var trio = [encryptedPrivKey, toHexString(publicKey), address]

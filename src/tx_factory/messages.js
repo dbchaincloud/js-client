@@ -85,6 +85,21 @@ export function MsgSend(
   }
 }
 
+export function MsgCallFunction(
+  senderAddress,
+  { appCode, function_name, argument }
+) {
+  return {
+    type: "dbchain/CallFunction",
+    value: {
+      app_code: appCode,
+      function_name,
+      argument,
+      owner: senderAddress,
+    },
+  };
+}
+
 function Coin({ amount, denom }) {
   return {
     amount: String(amount),

@@ -9,6 +9,7 @@ const handler = {
       case 'find':
       case 'equal':
       case 'where':
+      case 'order':
       case 'compareAll':
       case 'select':
       case 'findFirst':
@@ -127,6 +128,18 @@ class InternalQuerier {
       };
       this.commands.push(obj);
     }
+    return this.proxyKeeper;
+  }
+
+  order(fieldName, direction="asc") {
+    if (direction != "asc" && direction != "desc" ) {
+        return this.proxyKeeper;
+    }
+    this.commands.push({
+      method: "order",
+      field: fieldName,
+      direction: direction
+    });
     return this.proxyKeeper;
   }
 

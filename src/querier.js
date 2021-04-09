@@ -4,6 +4,7 @@ import { getAddress } from './key_manager'
 const handler = {
   get: function(target, prop) {
     switch(prop) {
+      case 'table':
       case 'appCode':
       case 'commands':
       case 'find':

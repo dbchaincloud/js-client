@@ -147,6 +147,12 @@ async function getFieldOptions(appCode, tableName, fieldName) {
   return response.data.result;
 }
 
+async function getFieldType(appCode, tableName, fieldName){
+  var uri = uriBuilder("column-data-type", appCode, tableName, fieldName);
+  var response = await restGet(uri);
+  return response.data.result;
+}
+
 async function getInsertFilter(appCode, tableName) {
   var uri = uriBuilder("tables", appCode, tableName);
   var response = await restGet(uri);
@@ -384,5 +390,5 @@ export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, 
          getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
          getInsertFilter, getTrigger, getTableMemo, getGroupMemo, getTableRaw, uriBuilder,
          getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken, canInsertRow,
-         uploadFile, addFriend, dropFriend, respondFriend, commit, querier, callFunction ,callCustomQuerier
+         uploadFile, addFriend, dropFriend, respondFriend, commit, querier, callFunction ,callCustomQuerier, getFieldType
 };

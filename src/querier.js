@@ -18,6 +18,7 @@ const handler = {
       case 'singleValue':
       case 'val':
       case 'proxyKeeper':
+      case 'pageNext':
         return Reflect.get(...arguments);
       case 'own':
         target.ownAddress();
@@ -27,6 +28,9 @@ const handler = {
         return target.proxyKeeper
       case 'last':
         target.findLast();
+        return target.proxyKeeper
+      case 'count':
+        target.count();
         return target.proxyKeeper
       default:
         target.table(prop);
@@ -159,7 +163,38 @@ class InternalQuerier {
     });
     return this.proxyKeeper;
   }
+  /**
+   * Total number of data acquired
+   * @returns {count: "21220"}
+   */
+  count() {
+    this.commands.push({
+      method: "count",
+    })
+    return this.proxyKeeper;
+  }
 
+  /**
+   * paging query
+   * Query for a specified amount of data under the specified page
+   * @param {Number} page 
+   * @param {Number} size 
+   * @returns [{id:1,...},{id:2,...}...]
+   */
+  pageNext(page, size) {
+    console.log(page, size)
+    let offset = (page - 1) * size < 0 ? 0 : (page - 1) * size;
+    console.log(offset)
+    this.commands.push({
+      method: "offset",
+      value: offset + ''
+    })
+    this.commands.push({
+      method: "limit",
+      value: size + ''
+    })
+    return this.proxyKeeper;
+  }
   async val() {
     var result = await querier(this.appCode, this.commands);
     if (result.length > 0 && this.singleValue) {

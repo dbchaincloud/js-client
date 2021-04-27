@@ -3,35 +3,47 @@ import * as MessageConstructors from './messages'
 import { restGet, restPost } from '../rest_lib'
 import {uriBuilder } from "../rest_client"
 
+let cosmosMsgType = [
+  'cosmos-sdk/MsgSend',
+]
+
 function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function sleep(fn, ...args) {
-    await timeout(1000);
-    return await fn(...args);
+  await timeout(1000);
+  return await fn(...args);
 }
 
-async function txIncludedInBlock(txHash) {
+async function txIncludedInBlock(txHash, isQueryCosmosMsgType) {
   try {
-    var uri = uriBuilder("tx-simple-result",  txHash);
+    var uri = isQueryCosmosMsgType ? `/txs/${txHash}` : uriBuilder("tx-simple-result", txHash);
     let response = await restGet(uri)
-    if (response.data.result.state=='success') {
-      return true
-    }
-    if (response.data.result.state=='fail') {
-      return response
-    }
-     else {
-      return false
+    if (isQueryCosmosMsgType) {
+      if (response.status >= 200 && response.status < 300) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      if (response.data.result.state == 'success') {
+        return true
+      }
+      if (response.data.result.state=='fail') {
+        return response
+      }
+      else {
+        return false
+      }
     }
   } catch(err) {
     return false
   }
 }
 
-async function queryTxInclusion (txHash, iterations = 15) {
-  let included  = await txIncludedInBlock(txHash)
+async function queryTxInclusion (txHash, iterations = 15, isQueryCosmosMsgType = false) {
+  let included = await txIncludedInBlock(txHash, isQueryCosmosMsgType)
   if(typeof(included)=='object'){
     return included;
   }
@@ -42,9 +54,9 @@ async function queryTxInclusion (txHash, iterations = 15) {
   var result = false
   iterations --
   if (iterations > 0) {
-    result = await sleep(await queryTxInclusion, txHash, iterations)
+    result = await sleep(await queryTxInclusion, txHash, iterations, isQueryCosmosMsgType)
   }
-  return result 
+  return result
 }
 
 export default class Factory {
@@ -69,7 +81,7 @@ export default class Factory {
   async getAccount() {
     var account = await restGet(`/auth/accounts/${this.fromWallet.address}`)
     return account.data.result.value
-  } 
+  }
 
   async send(messages) {
     var tx = {
@@ -95,11 +107,18 @@ export default class Factory {
       tx: signedTx,
       mode: 'async'
     })
-  
+
     var response = await restPost("/txs", broadcastBody)
     var txHash = response.data.txhash
-    var included = await queryTxInclusion(txHash)
+    var included = await queryTxInclusion(txHash, 15, isQueryCosmosMsgType(messages))
     return included
   }
 }
 
+function isQueryCosmosMsgType(messages) {
+  for (let i = 0; i < messages.length; i++) {
+    const msg = messages[i];
+    if (cosmosMsgType.indexOf(msg.type) !== -1) return true
+  }
+  return false
+}

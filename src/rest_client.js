@@ -306,8 +306,8 @@ async function insertRow(appCode, tableName, fields, callback) {
     );
 }
 
-async function uploadFile(file) {
-    var uri = uriBuilder("upload");
+async function uploadFile(file, appCode) {
+    var uri = uriBuilder("upload", appCode);
     var formData = new FormData();
     formData.append('file', file);
     var response = await restPost(

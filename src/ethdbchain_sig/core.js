@@ -22,8 +22,8 @@ import {
 } from 'secp256k1';
 
 import {
-    COSMOS_PREFIX,
-    COSMOS_PATH,
+    ADDRESS_PREFIX,
+    DERIVATION_PATH,
     BROADCAST_MODE_SYNC
 } from './constants';
 
@@ -38,13 +38,13 @@ import {
  *
  * @param   mnemonic - BIP39 mnemonic seed
  * @param   password - optional password from {@link https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki#from-mnemonic-to-seed|the BIP39 spec}
- * @param   prefix   - Bech32 human readable part, defaulting to {@link COSMOS_PREFIX|`COSMOS_PREFIX`}
- * @param   path     - BIP32 derivation path, defaulting to {@link COSMOS_PATH|`COSMOS_PATH`}
+ * @param   prefix   - Bech32 human readable part, defaulting to {@link ADDRESS_PREFIX|`ADDRESS_PREFIX`}
+ * @param   path     - BIP32 derivation path, defaulting to {@link DERIVATION_PATH|`DERIVATION_PATH`}
  *
  * @returns a keypair and address derived from the provided mnemonic
  * @throws  will throw if the provided mnemonic is invalid
  */
-export function createWalletFromMnemonic (mnemonic, password, prefix = COSMOS_PREFIX, path = COSMOS_PATH) {
+export function createWalletFromMnemonic (mnemonic, password, prefix = ADDRESS_PREFIX, path = DERIVATION_PATH) {
     const masterKey = createMasterKeyFromMnemonic(mnemonic, password);
 
     return createWalletFromMasterKey(masterKey, prefix, path);
@@ -69,12 +69,12 @@ export function createMasterKeyFromMnemonic (mnemonic, password) {
  * Create a {@link Wallet|`Wallet`} from a BIP32 master key.
  *
  * @param   masterKey - BIP32 master key
- * @param   prefix    - Bech32 human readable part, defaulting to {@link COSMOS_PREFIX|`COSMOS_PREFIX`}
- * @param   path      - BIP32 derivation path, defaulting to {@link COSMOS_PATH|`COSMOS_PATH`}
+ * @param   prefix    - Bech32 human readable part, defaulting to {@link ADDRESS_PREFIX|`ADDRESS_PREFIX`}
+ * @param   path      - BIP32 derivation path, defaulting to {@link DERIVATION_PATH|`DERIVATION_PATH`}
  *
  * @returns a keypair and address derived from the provided master key
  */
-export function createWalletFromMasterKey (masterKey, prefix = COSMOS_PREFIX, path = COSMOS_PATH) {
+export function createWalletFromMasterKey (masterKey, prefix = ADDRESS_PREFIX, path = DERIVATION_PATH) {
     const { privateKey, publicKey } = createKeyPairFromMasterKey(masterKey, path);
 
     const address = createAddress(publicKey, prefix);
@@ -90,12 +90,12 @@ export function createWalletFromMasterKey (masterKey, prefix = COSMOS_PREFIX, pa
  * Derive a keypair from a BIP32 master key.
  *
  * @param   masterKey - BIP32 master key
- * @param   path      - BIP32 derivation path, defaulting to {@link COSMOS_PATH|`COSMOS_PATH`}
+ * @param   path      - BIP32 derivation path, defaulting to {@link DERIVATION_PATH|`DERIVATION_PATH`}
  *
  * @returns derived public and private key pair
  * @throws  will throw if a private key cannot be derived
  */
-export function createKeyPairFromMasterKey (masterKey, path = COSMOS_PATH) {
+export function createKeyPairFromMasterKey (masterKey, path = DERIVATION_PATH) {
     const { privateKey } = masterKey.derivePath(path);
     if (!privateKey) {
         throw new Error('could not derive private key');
@@ -113,11 +113,11 @@ export function createKeyPairFromMasterKey (masterKey, path = COSMOS_PATH) {
  * Derive a Bech32 address from a public key.
  *
  * @param   publicKey - public key bytes
- * @param   prefix    - Bech32 human readable part, defaulting to {@link COSMOS_PREFIX|`COSMOS_PREFIX`}
+ * @param   prefix    - Bech32 human readable part, defaulting to {@link ADDRESS_PREFIX|`ADDRESS_PREFIX`}
  *
  * @returns Bech32-encoded address
  */
-export function createAddress (publicKey, prefix = COSMOS_PREFIX) {
+export function createAddress (publicKey, prefix = ADDRESS_PREFIX) {
     const hash1 = sha256(publicKey);
     const hash2 = ripemd160(hash1);
     const words = bech32ToWords(hash2);

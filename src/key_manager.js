@@ -1,6 +1,6 @@
 const CryptoJS = require("crypto-js");
 import { generateMnemonic, validateMnemonic as bip39ValidateMnemonic } from 'bip39'
-import  { createWalletFromMnemonic } from "./cosmos_sig/index"
+import  { createWalletFromMnemonic } from "./ethdbchain_sig/index"
 
 const PassphraseKey = 'passphrase'
 const StorageKey    = 'dbchainwallet'

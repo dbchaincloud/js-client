@@ -1,4 +1,4 @@
-import { sign } from "./cosmos_sig/index"
+import { sign } from "./ethdbchain_sig/index"
 import { getPrivKey, getPubKey } from "./key_manager";
 const bs58 =  require("bs58")
 

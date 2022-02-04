@@ -1,13 +1,14 @@
 /**
  * Bech32 prefix for Cosmos addresses.
  */
-export const COSMOS_PREFIX = 'cosmos';
+export const ADDRESS_PREFIX = 'ethm';
 
 /**
  * BIP32 derivation path for Cosmos keys.
  */
 // @formatter:off
-export const COSMOS_PATH = "m/44'/118'/0'/0/0";
+export const DERIVATION_PATH = "m/44'/66'/0'/0/0";
+
 // @formatter:on
 
 /**

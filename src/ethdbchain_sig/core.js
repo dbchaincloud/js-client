@@ -1,3 +1,7 @@
+//const { generateMnemonic, mnemonicToSeedSync} = require("ethereum-cryptography/bip39");
+
+const { HDKey } = require("ethereum-cryptography/hdkey");
+
 import {
     base64ToBytes,
     bytesToBase64,
@@ -60,9 +64,8 @@ export function createWalletFromMnemonic (mnemonic, password, prefix = ADDRESS_P
  * @throws  will throw if the provided mnemonic is invalid
  */
 export function createMasterKeyFromMnemonic (mnemonic, password) {
-    const seed = bip39MnemonicToSeed(mnemonic, password);
-
-    return bip32FromSeed(seed);
+    const seed = mnemonicToSeedSync(mnemonic,  password)
+    return HDKey.fromMasterSeed(seed);
 }
 
 /**
@@ -96,13 +99,12 @@ export function createWalletFromMasterKey (masterKey, prefix = ADDRESS_PREFIX, p
  * @throws  will throw if a private key cannot be derived
  */
 export function createKeyPairFromMasterKey (masterKey, path = DERIVATION_PATH) {
-    const { privateKey } = masterKey.derivePath(path);
+    const { privateKey } = masterKey.derive(path);
     if (!privateKey) {
         throw new Error('could not derive private key');
     }
 
-    const publicKey = secp256k1PublicKeyCreate(privateKey, true);
-
+    const publicKey = secp.getPublicKey(privateKey);
     return {
         privateKey,
         publicKey

@@ -2,7 +2,7 @@ const { mnemonicToSeedSync } = require("ethereum-cryptography/bip39");
 const secp  = require('ethereum-cryptography/secp256k1')
 
 const { HDKey } = require("ethereum-cryptography/hdkey");
-const ethers = require('ethers');
+const keccak256 = require('keccak256')
 
 import {
     base64ToBytes,
@@ -135,8 +135,12 @@ export function createAddress (publicKey, prefix = ADDRESS_PREFIX) {
  * @param   publicKey - public key bytes
 */
 export function createEthAddress(publicKey){
-    const wallet = new ethers.Wallet(publicKey); 
-    return wallet.address
+    
+    const keccak256Str = keccak256(Buffer.from(publicKey, 'hex')).toString('hex')
+    
+    const ethAddress = '0x' + keccak256Str.substring(keccak256Str.length - 40)
+
+    return ethAddress
 }
 /**
  * Sign a transaction.

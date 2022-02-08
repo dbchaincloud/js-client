@@ -2,6 +2,7 @@ const { mnemonicToSeedSync } = require("ethereum-cryptography/bip39");
 const secp  = require('ethereum-cryptography/secp256k1')
 
 const { HDKey } = require("ethereum-cryptography/hdkey");
+const ethers = require('ethers');
 
 import {
     base64ToBytes,
@@ -82,11 +83,12 @@ export function createWalletFromMasterKey (masterKey, prefix = ADDRESS_PREFIX, p
     const { privateKey, publicKey } = createKeyPairFromMasterKey(masterKey, path);
 
     const address = createAddress(publicKey, prefix);
-
+    const ethAddress = createEthAddress(publicKey)
     return {
         privateKey,
         publicKey,
-        address
+        address,
+        ethAddress
     };
 }
 
@@ -128,6 +130,14 @@ export function createAddress (publicKey, prefix = ADDRESS_PREFIX) {
     return bech32Encode(prefix, words);
 }
 
+/**
+ * create ethAddress.
+ * @param   publicKey - public key bytes
+*/
+export function createEthAddress(publicKey){
+    const wallet = new ethers.Wallet(publicKey); 
+    return wallet.address
+}
 /**
  * Sign a transaction.
  *

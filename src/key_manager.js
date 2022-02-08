@@ -69,9 +69,9 @@ function hasKey() {
 }
 
 function createAndStoreKey(mnemonic, passphrase) {
-  const { address, privateKey, publicKey } = createWalletFromMnemonic(mnemonic, "")
+  const { address, privateKey, publicKey, ethAddress } = createWalletFromMnemonic(mnemonic, "")
   var encryptedPrivKey = aesEncrypt(toHexString(privateKey), passphrase);
-  var trio = [encryptedPrivKey, toHexString(publicKey), address]
+  var trio = [encryptedPrivKey, toHexString(publicKey), address,ethAddress]
 
   localStorage.setItem(StorageKey, JSON.stringify(trio));
   return getAddress();
@@ -106,7 +106,18 @@ function getAddress() {
   return trio[2];
 }
 
+function getBech32Address(){
+  var trio = getKeyTrio()
+  if(trio == null) { return null }
+  return trio[2];
+}
+
+function getEthAddress(){
+  var trio = getKeyTrio()
+  if(trio == null) { return null }
+  return trio[3];
+}
 
 export { hasKey, hasPassphrase, savePassphrase, removePassphrase, newMnemonic,
-         validateMnemonic, createAndStoreKey, getPrivKey, getPubKey, getAddress }
+         validateMnemonic, createAndStoreKey, getPrivKey, getPubKey, getAddress,getBech32Address,getEthAddress }
 

@@ -1,4 +1,5 @@
-//const { generateMnemonic, mnemonicToSeedSync} = require("ethereum-cryptography/bip39");
+const { mnemonicToSeedSync } = require("ethereum-cryptography/bip39");
+const secp  = require('ethereum-cryptography/secp256k1')
 
 const { HDKey } = require("ethereum-cryptography/hdkey");
 

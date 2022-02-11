@@ -1,6 +1,6 @@
 {
   "name": "xiaolong-dbchain-client",
-  "version": "2.0.8",
+  "version": "2.1.4",
   "description": "Javascript client implementation with orm for dbChain cloud service",
   "main": "index.js",
   "scripts": {
@@ -34,9 +34,10 @@
     "cids": "^1.1.4",
     "create-hash": "^1.2.0",
     "crypto-js": "^4.0.0",
-    "ethers": "^5.5.4",
     "ethereum-cryptography": "^1.0.0",
+    "ethers": "^5.5.4",
     "js-base64": "^2.5.2",
+    "keccak256": "^1.0.6",
     "secp256k1": "^4.0.0"
   }
 }

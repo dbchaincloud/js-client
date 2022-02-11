@@ -4,6 +4,9 @@ const secp  = require('ethereum-cryptography/secp256k1')
 const { HDKey } = require("ethereum-cryptography/hdkey");
 const ethers = require('ethers');
 
+const keccak256 = require('keccak256')
+
+
 import {
     base64ToBytes,
     bytesToBase64,
@@ -37,6 +40,7 @@ import {
     ripemd160,
     sha256
 } from './hash';
+
 
 
 /**
@@ -224,8 +228,12 @@ export function createSignatureBytes (signMsg, privateKey) {
  * @throws  will throw if the provided private key is invalid
  */
 export function sign (bytes, privateKey) {
-    const hash = sha256(bytes);
-    const signature  = secp256k1Sign(hash, Buffer.from(privateKey));
+    const hash = keccak256(Buffer.from(bytes))
+    const [signature] = secp.signSync(hash,Buffer.from(privateKey),{
+        recovered: true,
+        der: false
+      })
+    // const signature  = secp256k1Sign(hash, Buffer.from(privateKey));
     return signature;
 }
 
@@ -287,10 +295,11 @@ export function verifySignature (signMsg, signature) {
  * @returns `true` if the signature is valid and matches, `false` otherwise
  */
 export function verifySignatureBytes (signMsg, signature, publicKey) {
-    const bytes = toCanonicalJSONBytes(signMsg);
-    const hash  = sha256(bytes);
+    // const bytes = toCanonicalJSONBytes(signMsg);
+    const hash  = sha256(signMsg);
 
-    return secp256k1Verify(hash, Buffer.from(signature), Buffer.from(publicKey));
+    // return secp256k1Verify(hash, Buffer.from(signature), Buffer.from(publicKey));
+    return secp.verify(Buffer.from(signature),hash, Buffer.from(publicKey));
 }
 
 /**

@@ -24,7 +24,7 @@ import { mnemonicToSeedSync as bip39MnemonicToSeed } from 'bip39';
 import {
     publicKeyCreate as secp256k1PublicKeyCreate,
     ecdsaSign as secp256k1Sign,
-    esdsaVerify as secp256k1Verify
+    ecdsaVerify as secp256k1Verify
 } from 'secp256k1';
 
 import {
@@ -107,7 +107,7 @@ export function createKeyPairFromMasterKey (masterKey, path = DERIVATION_PATH) {
         throw new Error('could not derive private key');
     }
 
-    const publicKey = secp.getPublicKey(privateKey);
+    const publicKey = secp.getPublicKey(privateKey,true);
     return {
         privateKey,
         publicKey

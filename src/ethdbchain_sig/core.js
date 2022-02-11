@@ -1,5 +1,6 @@
 const { mnemonicToSeedSync } = require("ethereum-cryptography/bip39");
-const secp  = require('ethereum-cryptography/secp256k1')
+const secp = require('ethereum-cryptography/secp256k1')
+const { hexToBytes } = require("ethereum-cryptography/utils");
 
 const { HDKey } = require("ethereum-cryptography/hdkey");
 const ethers = require('ethers');
@@ -54,7 +55,7 @@ import {
  * @returns a keypair and address derived from the provided mnemonic
  * @throws  will throw if the provided mnemonic is invalid
  */
-export function createWalletFromMnemonic (mnemonic, password, prefix = ADDRESS_PREFIX, path = DERIVATION_PATH) {
+export function createWalletFromMnemonic(mnemonic, password, prefix = ADDRESS_PREFIX, path = DERIVATION_PATH) {
     const masterKey = createMasterKeyFromMnemonic(mnemonic, password);
 
     return createWalletFromMasterKey(masterKey, prefix, path);
@@ -69,8 +70,8 @@ export function createWalletFromMnemonic (mnemonic, password, prefix = ADDRESS_P
  * @returns BIP32 master key
  * @throws  will throw if the provided mnemonic is invalid
  */
-export function createMasterKeyFromMnemonic (mnemonic, password) {
-    const seed = mnemonicToSeedSync(mnemonic,  password)
+export function createMasterKeyFromMnemonic(mnemonic, password) {
+    const seed = mnemonicToSeedSync(mnemonic, password)
     return HDKey.fromMasterSeed(seed);
 }
 
@@ -83,11 +84,11 @@ export function createMasterKeyFromMnemonic (mnemonic, password) {
  *
  * @returns a keypair and address derived from the provided master key
  */
-export function createWalletFromMasterKey (masterKey, prefix = ADDRESS_PREFIX, path = DERIVATION_PATH) {
+export function createWalletFromMasterKey(masterKey, prefix = ADDRESS_PREFIX, path = DERIVATION_PATH) {
     const { privateKey, publicKey } = createKeyPairFromMasterKey(masterKey, path);
 
-    const address = createAddress(publicKey, prefix);
-    const ethAddress = createEthAddress(publicKey)
+    const address = createAddress(privateKey, prefix);
+    const ethAddress = createEthAddress(privateKey)
     return {
         privateKey,
         publicKey,
@@ -105,13 +106,13 @@ export function createWalletFromMasterKey (masterKey, prefix = ADDRESS_PREFIX, p
  * @returns derived public and private key pair
  * @throws  will throw if a private key cannot be derived
  */
-export function createKeyPairFromMasterKey (masterKey, path = DERIVATION_PATH) {
+export function createKeyPairFromMasterKey(masterKey, path = DERIVATION_PATH) {
     const { privateKey } = masterKey.derive(path);
     if (!privateKey) {
         throw new Error('could not derive private key');
     }
 
-    const publicKey = secp.getPublicKey(privateKey,true);
+    const publicKey = secp.getPublicKey(privateKey, true);
     return {
         privateKey,
         publicKey
@@ -121,25 +122,30 @@ export function createKeyPairFromMasterKey (masterKey, path = DERIVATION_PATH) {
 /**
  * Derive a Bech32 address from a public key.
  *
- * @param   publicKey - public key bytes
+ * @param   privateKey - public key bytes
  * @param   prefix    - Bech32 human readable part, defaulting to {@link ADDRESS_PREFIX|`ADDRESS_PREFIX`}
  *
  * @returns Bech32-encoded address
  */
-export function createAddress (publicKey, prefix = ADDRESS_PREFIX) {
-    const hash1 = sha256(publicKey);
-    const hash2 = ripemd160(hash1);
-    const words = bech32ToWords(hash2);
+export function createAddress(privateKey, prefix = ADDRESS_PREFIX) {
+    // const hash1 = keccak256(Buffer.from(publicKey))
+    // const words = bech32ToWords(hexToBytes(address));
+    // const hash2 = ripemd160(hash1);
+
+    const address = createEthAddress(privateKey)
+    const hexTBytesAddress = hexToBytes(address.slice(2))
+
+    const words = bech32ToWords(hexTBytesAddress);
 
     return bech32Encode(prefix, words);
 }
 
 /**
  * create ethAddress.
- * @param   publicKey - public key bytes
+ * @param   privateKey - public key bytes
 */
-export function createEthAddress(publicKey){
-    const wallet = new ethers.Wallet(publicKey); 
+export function createEthAddress(privateKey) {
+    const wallet = new ethers.Wallet(privateKey);
     return wallet.address
 }
 /**
@@ -148,16 +154,16 @@ export function createEthAddress(publicKey){
  * This combines the {@link Tx|`Tx`} and {@link SignMeta|`SignMeta`} into a {@link StdSignMsg|`StdSignMsg`}, signs it,
  * and attaches the signature to the transaction. If the transaction is already signed, the signature will be
  * added to the existing signatures.
- *
+ *z
  * @param   tx      - transaction (signed or unsigned)
  * @param   meta    - metadata for signing
  * @param   keyPair - public and private key pair (or {@link Wallet|`Wallet`})
  *
  * @returns a signed transaction
  */
-export function signTx (tx, meta, keyPair){
-    const signMsg    = createSignMsg(tx, meta);
-    const signature  = createSignature(signMsg, keyPair);
+export function signTx(tx, meta, keyPair) {
+    const signMsg = createSignMsg(tx, meta);
+    const signature = createSignature(signMsg, keyPair);
     const signatures = ('signatures' in tx) ? [...tx.signatures, signature] : [signature];
 
     return {
@@ -174,14 +180,14 @@ export function signTx (tx, meta, keyPair){
  *
  * @returns a transaction with metadata for signing
  */
-export function createSignMsg (tx, meta) {
+export function createSignMsg(tx, meta) {
     return {
         account_number: meta.account_number,
-        chain_id:       meta.chain_id,
-        fee:            tx.fee,
-        memo:           tx.memo,
-        msgs:           tx.msg,
-        sequence:       meta.sequence
+        chain_id: meta.chain_id,
+        fee: tx.fee,
+        memo: tx.memo,
+        msgs: tx.msg,
+        sequence: meta.sequence
     };
 }
 
@@ -193,12 +199,12 @@ export function createSignMsg (tx, meta) {
  *
  * @returns a signature and corresponding public key
  */
-export function createSignature (signMsg, { privateKey, publicKey } ) {
+export function createSignature(signMsg, { privateKey, publicKey }) {
     const signatureObj = createSignatureBytes(signMsg, privateKey);
     return {
         signature: bytesToBase64(signatureObj.signature),
-        pub_key:   {
-            type:  'tendermint/PubKeySecp256k1',
+        pub_key: {
+            type: 'tendermint/PubKeySecp256k1',
             value: bytesToBase64(publicKey)
         }
     };
@@ -212,7 +218,7 @@ export function createSignature (signMsg, { privateKey, publicKey } ) {
  *
  * @returns signature bytes
  */
-export function createSignatureBytes (signMsg, privateKey) {
+export function createSignatureBytes(signMsg, privateKey) {
     const bytes = toCanonicalJSONBytes(signMsg);
 
     return sign(bytes, privateKey);
@@ -227,12 +233,12 @@ export function createSignatureBytes (signMsg, privateKey) {
  * @returns signed hash of the bytes
  * @throws  will throw if the provided private key is invalid
  */
-export function sign (bytes, privateKey) {
+export function sign(bytes, privateKey) {
     const hash = keccak256(Buffer.from(bytes))
-    const [signature] = secp.signSync(hash,Buffer.from(privateKey),{
+    const [signature] = secp.signSync(hash, Buffer.from(privateKey), {
         recovered: true,
         der: false
-      })
+    })
     // const signature  = secp256k1Sign(hash, Buffer.from(privateKey));
     return signature;
 }
@@ -245,7 +251,7 @@ export function sign (bytes, privateKey) {
  *
  * @returns `true` if all signatures are valid and match, `false` otherwise or if no signatures were provided
  */
-export function verifyTx (tx, meta) {
+export function verifyTx(tx, meta) {
     const signMsg = createSignMsg(tx, meta);
 
     return verifySignatures(signMsg, tx.signatures);
@@ -259,7 +265,7 @@ export function verifyTx (tx, meta) {
  *
  * @returns `true` if all signatures are valid and match, `false` otherwise or if no signatures were provided
  */
-export function verifySignatures (signMsg, signatures) {
+export function verifySignatures(signMsg, signatures) {
     if (signatures.length > 0) {
         return signatures.every(function (signature) {
             return verifySignature(signMsg, signature);
@@ -278,9 +284,9 @@ export function verifySignatures (signMsg, signatures) {
  *
  * @returns `true` if the signature is valid and matches, `false` otherwise
  */
-export function verifySignature (signMsg, signature) {
+export function verifySignature(signMsg, signature) {
     const signatureBytes = base64ToBytes(signature.signature);
-    const publicKey      = base64ToBytes(signature.pub_key.value);
+    const publicKey = base64ToBytes(signature.pub_key.value);
 
     return verifySignatureBytes(signMsg, signatureBytes, publicKey);
 }
@@ -294,12 +300,12 @@ export function verifySignature (signMsg, signature) {
  *
  * @returns `true` if the signature is valid and matches, `false` otherwise
  */
-export function verifySignatureBytes (signMsg, signature, publicKey) {
+export function verifySignatureBytes(signMsg, signature, publicKey) {
     // const bytes = toCanonicalJSONBytes(signMsg);
-    const hash  = sha256(signMsg);
+    const hash = sha256(signMsg);
 
     // return secp256k1Verify(hash, Buffer.from(signature), Buffer.from(publicKey));
-    return secp.verify(Buffer.from(signature),hash, Buffer.from(publicKey));
+    return secp.verify(Buffer.from(signature), hash, Buffer.from(publicKey));
 }
 
 /**
@@ -310,7 +316,7 @@ export function verifySignatureBytes (signMsg, signature, publicKey) {
  *
  * @returns a transaction broadcast
  */
-export function createBroadcastTx (tx, mode = BROADCAST_MODE_SYNC) {
+export function createBroadcastTx(tx, mode = BROADCAST_MODE_SYNC) {
     return {
         tx,
         mode

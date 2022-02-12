@@ -1,9 +1,8 @@
 import { Base64 } from 'js-base64';
 import { restGet, restPost } from "./rest_lib";
 import { createAccessToken } from "./access_token";
-import {signAndBroadcast} from "./blockchain"
-const bs58 =  require("bs58")
-
+import { signAndBroadcast } from "./blockchain"
+import bs58 from 'bs58'
 const queryRoot = "/dbchain";
 
 ///////////////////////
@@ -38,7 +37,7 @@ async function getPendingFriends() {
   }
 }
 
-async function getAppCode(adminOnly=false) {
+async function getAppCode(adminOnly = false) {
   var uri;
   if (adminOnly) {
     uri = uriBuilder("admin_apps");
@@ -59,7 +58,7 @@ async function getApp(appCode) {
  * @param {Boolean} adminOnly true or false
  * @returns {Array} Applications I manage (I create or I am an administrator)
  */
-async function getApps(adminOnly=false) {
+async function getApps(adminOnly = false) {
   var appCode = await getAppCode(adminOnly) || [];
   var apps = [];
   for (var i = 0; i < appCode.length; i += 1) {
@@ -118,17 +117,17 @@ async function getTableOptions(appCode, tableName) {
  * @param {String} name To query the value, can pass or not pass, do not pass or return all，options：['fields','filter','momes','name','owner','trigger']
  * @returns Returns the corresponding property or all properties.  Object or Array
  */
-async function getTableRaw(appCode, tableName, name='') {
+async function getTableRaw(appCode, tableName, name = '') {
   var uri = uriBuilder("tables", appCode, tableName);
   var response = await restGet(uri);
-  if(name){
+  if (name) {
     return response.data.result[name];
   }
   return response.data.result;
 }
 
 async function getTable(appCode, tableName) {
-  var fields= await getTableRaw(appCode, tableName,'fields');
+  var fields = await getTableRaw(appCode, tableName, 'fields');
   var result = [];
   for (var i = 0; i < fields.length; i++) {
     var f = fields[i];
@@ -147,7 +146,7 @@ async function getFieldOptions(appCode, tableName, fieldName) {
   return response.data.result;
 }
 
-async function getFieldType(appCode, tableName, fieldName){
+async function getFieldType(appCode, tableName, fieldName) {
   var uri = uriBuilder("column-data-type", appCode, tableName, fieldName);
   var response = await restGet(uri);
   return response.data.result;
@@ -168,7 +167,7 @@ async function getTrigger(appCode, tableName) {
 }
 
 async function getTableMemo(appCode, tableName) {
-  var memo = await getTableRaw(appCode, tableName,'memo');
+  var memo = await getTableRaw(appCode, tableName, 'memo');
   return memo;
 }
 
@@ -241,93 +240,93 @@ async function getAccount(address) {
 //////////////////
 
 async function sendToken(toAddress, amount, callback) {
-    await signAndBroadcast(
-        'MsgSend',
-        {
-            toAddress,
-            amounts: [{denom: 'dbctoken', amount: amount}]
-        },
-        callback
-    );
+  await signAndBroadcast(
+    'MsgSend',
+    {
+      toAddress,
+      amounts: [{ denom: 'dbctoken', amount: amount }]
+    },
+    callback
+  );
 }
 
 async function addFriend(myName, friendAddr, friendName, callback) {
-    if (friendAddr == null) {
-      return
-    }
-    await signAndBroadcast(
-        'MsgAddFriend',
-        {
-            myName,
-            friendAddr,
-            friendName
-        },
-        callback
-    );
+  if (friendAddr == null) {
+    return
+  }
+  await signAndBroadcast(
+    'MsgAddFriend',
+    {
+      myName,
+      friendAddr,
+      friendName
+    },
+    callback
+  );
 }
 
 async function dropFriend(friendAddr, callback) {
-    if (friendAddr == null) {
-      return
-    }
-    await signAndBroadcast(
-        'MsgDropFriend',
-        {
-            friendAddr
-        },
-        callback
-    );
+  if (friendAddr == null) {
+    return
+  }
+  await signAndBroadcast(
+    'MsgDropFriend',
+    {
+      friendAddr
+    },
+    callback
+  );
 }
 
 async function respondFriend(friendAddr, action, callback) {
-    if (friendAddr == null) {
-      return
-    }
-    await signAndBroadcast(
-        'MsgRespondFriend',
-        {
-            friendAddr,
-            action
-        },
-        callback
-    );
+  if (friendAddr == null) {
+    return
+  }
+  await signAndBroadcast(
+    'MsgRespondFriend',
+    {
+      friendAddr,
+      action
+    },
+    callback
+  );
 }
 
 async function insertRow(appCode, tableName, fields, callback) {
-    var encodedFields = Base64.encode(JSON.stringify(fields))
-    await signAndBroadcast(
-        "MsgInsertRow",
-        {
-            app_code: appCode,
-            table_name: tableName,
-            fields: encodedFields
-        },
-        callback
-    );
+  var encodedFields = Base64.encode(JSON.stringify(fields))
+  await signAndBroadcast(
+    "MsgInsertRow",
+    {
+      app_code: appCode,
+      table_name: tableName,
+      fields: encodedFields
+    },
+    callback
+  );
 }
 
 async function uploadFile(file, appCode) {
-    var uri = uriBuilder("upload", appCode);
-    var formData = new FormData();
-    formData.append('file', file);
-    var response = await restPost(
-        uri,
-        formData,
-        {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        }
-    );
-    return(response.data.result)
+  var uri = uriBuilder("upload", appCode);
+  var formData = new FormData();
+  formData.append('file', file);
+  var response = await restPost(
+    uri,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  );
+  return (response.data.result)
 }
 
 async function commit(callback) {
-    await signAndBroadcast(
-        null,
-        null,
-        callback
-    );
+  await signAndBroadcast(
+    null,
+    null,
+    callback
+  );
 }
 //////////////////////
 //                  //
@@ -352,7 +351,7 @@ function uriBuilder(...args) {
  * @param {Array} Argument ask sb to do sth ;
  * @param {Function} callback The callback function that fires after execution
  */
- async function callFunction(appCode, FunctionName, Argument = [], callback) {
+async function callFunction(appCode, FunctionName, Argument = [], callback) {
   let data = JSON.stringify(Argument)
 
   await signAndBroadcast(
@@ -386,9 +385,10 @@ async function callCustomQuerier(appCode, FunctionName, Argument = [], callback)
 }
 
 
-export { getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin, checkChainId,
-         getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
-         getInsertFilter, getTrigger, getTableMemo, getGroupMemo, getTableRaw, uriBuilder,
-         getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken, canInsertRow,
-         uploadFile, addFriend, dropFriend, respondFriend, commit, querier, callFunction ,callCustomQuerier, getFieldType
+export {
+  getFriends, getPendingFriends, getAppCode, getApps, getApp, isAppUser, isSysAdmin, checkChainId,
+  getTables, getTable, getGroups, getGroupMembers, getTableOptions, getFieldOptions,
+  getInsertFilter, getTrigger, getTableMemo, getGroupMemo, getTableRaw, uriBuilder,
+  getAllIds, getIdsBy, getRow, getAccount, insertRow, sendToken, canInsertRow,
+  uploadFile, addFriend, dropFriend, respondFriend, commit, querier, callFunction, callCustomQuerier, getFieldType
 };

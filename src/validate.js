@@ -1,7 +1,7 @@
-const CID = require('cids')
+import CID from 'cids'
 import { setChainId, getChainId } from './blockchain';
 import { getBaseUrl, setBaseUrl } from './rest_lib';
-import { checkChainId} from "./rest_client"
+import { checkChainId } from "./rest_client"
 /**
  * Add a method to validate the 'CID' format, only the format, not the presence in the database
  * @param {String} cid 

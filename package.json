@@ -1,10 +1,10 @@
 {
   "name": "xiaolong-dbchain-client",
-  "version": "2.1.20",
+  "version": "2.1.26",
   "description": "Javascript client implementation with orm for dbChain cloud service",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:test": "parcel ./test/testCore.html"
   },
   "repository": {
     "type": "git",
@@ -34,10 +34,13 @@
     "cids": "^1.1.4",
     "create-hash": "^1.2.0",
     "crypto-js": "^4.0.0",
+    "cypress": "^9.4.1",
     "ethereum-cryptography": "^1.0.0",
     "ethers": "^5.5.4",
     "js-base64": "^2.5.2",
     "keccak256": "^1.0.6",
-    "secp256k1": "^4.0.0"
+    "parcel-bundler": "^1.12.5",
+    "secp256k1": "^4.0.0",
+    "xiaolong-dbchain-client": "^2.1.26"
   }
 }

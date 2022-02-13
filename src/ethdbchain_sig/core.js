@@ -1,8 +1,8 @@
 import { mnemonicToSeedSync } from 'ethereum-cryptography/bip39'
-import secp from 'ethereum-cryptography/secp256k1'
+import * as secp from 'ethereum-cryptography/secp256k1'
 import { hexToBytes } from 'ethereum-cryptography/utils'
 import { HDKey } from 'ethereum-cryptography/hdkey'
-import ethers from 'ethers';
+import  * as ethers from 'ethers';
 import keccak256 from 'keccak256';
 
 import {

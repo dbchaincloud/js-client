@@ -70,8 +70,8 @@ export function createMasterKeyFromMnemonic (mnemonic, password) {
 export function createWalletFromMasterKey (masterKey, prefix = ADDRESS_PREFIX, path = DERIVATION_PATH) {
     const { privateKey, publicKey } = createKeyPairFromMasterKey(masterKey, path);
 
-    const address = createAddress(privateKey, prefix);
-    const ethAddress = createEthAddress(privateKey)
+    const address = createAddress(publicKey, prefix);
+    const ethAddress = createEthAddress(publicKey)
 
     return {
         privateKey,

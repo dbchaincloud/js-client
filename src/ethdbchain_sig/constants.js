@@ -7,7 +7,7 @@ export const ADDRESS_PREFIX = 'ethm';
  * BIP32 derivation path for Cosmos keys.
  */
 // @formatter:off
-export const DERIVATION_PATH = "m/44'/66'/0'/0/0";
+export const DERIVATION_PATH = "m/44'/60'/0'/0/0";
 
 // @formatter:on
 

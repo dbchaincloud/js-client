@@ -1,6 +1,9 @@
-//const { generateMnemonic, mnemonicToSeedSync} = require("ethereum-cryptography/bip39");
-
-const { HDKey } = require("ethereum-cryptography/hdkey");
+import { mnemonicToSeedSync } from 'ethereum-cryptography/bip39'
+import * as secp from 'ethereum-cryptography/secp256k1'
+import { hexToBytes } from 'ethereum-cryptography/utils'
+import { HDKey } from 'ethereum-cryptography/hdkey'
+import  * as ethers from 'ethers';
+import keccak256 from 'keccak256';
 
 import {
     base64ToBytes,
@@ -14,25 +17,12 @@ import {
 } from 'bech32';
 
 import {
-    fromSeed as bip32FromSeed
-} from 'bip32';
-
-import { mnemonicToSeedSync as bip39MnemonicToSeed } from 'bip39';
-
-import {
-    publicKeyCreate as secp256k1PublicKeyCreate,
-    ecdsaSign as secp256k1Sign,
-    esdsaVerify as secp256k1Verify
-} from 'secp256k1';
-
-import {
     ADDRESS_PREFIX,
     DERIVATION_PATH,
     BROADCAST_MODE_SYNC
 } from './constants';
 
 import {
-    ripemd160,
     sha256
 } from './hash';
 
@@ -80,12 +70,14 @@ export function createMasterKeyFromMnemonic (mnemonic, password) {
 export function createWalletFromMasterKey (masterKey, prefix = ADDRESS_PREFIX, path = DERIVATION_PATH) {
     const { privateKey, publicKey } = createKeyPairFromMasterKey(masterKey, path);
 
-    const address = createAddress(publicKey, prefix);
+    const address = createAddress(privateKey, prefix);
+    const ethAddress = createEthAddress(privateKey)
 
     return {
         privateKey,
         publicKey,
-        address
+        address,
+        ethAddress
     };
 }
 
@@ -104,7 +96,7 @@ export function createKeyPairFromMasterKey (masterKey, path = DERIVATION_PATH) {
         throw new Error('could not derive private key');
     }
 
-    const publicKey = secp.getPublicKey(privateKey);
+    const publicKey = secp.getPublicKey(privateKey, true);
     return {
         privateKey,
         publicKey
@@ -120,11 +112,21 @@ export function createKeyPairFromMasterKey (masterKey, path = DERIVATION_PATH) {
  * @returns Bech32-encoded address
  */
 export function createAddress (publicKey, prefix = ADDRESS_PREFIX) {
-    const hash1 = sha256(publicKey);
-    const hash2 = ripemd160(hash1);
-    const words = bech32ToWords(hash2);
+    const address = createEthAddress(publicKey)
+    const hexTBytesAddress = hexToBytes(address.slice(2))
+
+    const words = bech32ToWords(hexTBytesAddress);
 
     return bech32Encode(prefix, words);
+}
+
+/**
+ * create ethAddress.
+ * @param   publicKey - public key bytes
+*/
+export function createEthAddress(publicKey) {
+    const wallet = new ethers.Wallet(publicKey);
+    return wallet.address
 }
 
 /**
@@ -213,8 +215,11 @@ export function createSignatureBytes (signMsg, privateKey) {
  * @throws  will throw if the provided private key is invalid
  */
 export function sign (bytes, privateKey) {
-    const hash = sha256(bytes);
-    const signature  = secp256k1Sign(hash, Buffer.from(privateKey));
+    const hash = keccak256(Buffer.from(bytes))
+    const [signature] = secp.signSync(hash, Buffer.from(privateKey), {
+        recovered: true,
+        der: false
+    })
     return signature;
 }
 
@@ -277,7 +282,7 @@ export function verifySignature (signMsg, signature) {
  */
 export function verifySignatureBytes (signMsg, signature, publicKey) {
     const bytes = toCanonicalJSONBytes(signMsg);
-    const hash  = sha256(bytes);
+    const hash = keccak256(Buffer.from(bytes))
 
     return secp256k1Verify(hash, Buffer.from(signature), Buffer.from(publicKey));
 }

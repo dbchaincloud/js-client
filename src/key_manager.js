@@ -1,4 +1,4 @@
-const CryptoJS = require("crypto-js");
+import CryptoJS from 'crypto-js';
 import { generateMnemonic, validateMnemonic as bip39ValidateMnemonic } from 'bip39'
 import  { createWalletFromMnemonic } from "./ethdbchain_sig/index"
 
@@ -69,9 +69,9 @@ function hasKey() {
 }
 
 function createAndStoreKey(mnemonic, passphrase) {
-  const { address, privateKey, publicKey } = createWalletFromMnemonic(mnemonic, "")
+  const { address, privateKey, publicKey, ethAddress } = createWalletFromMnemonic(mnemonic, "")
   var encryptedPrivKey = aesEncrypt(toHexString(privateKey), passphrase);
-  var trio = [encryptedPrivKey, toHexString(publicKey), address]
+  var trio = [encryptedPrivKey, toHexString(publicKey), address,ethAddress]
 
   localStorage.setItem(StorageKey, JSON.stringify(trio));
   return getAddress();

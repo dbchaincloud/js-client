@@ -1,5 +1,4 @@
-const axios = require('axios').default;
-
+import axios from 'axios'
 const baseUrlKey = "dbchain_base_url";
 const defaultBaseUrl = "/relay";
 var baseUrl = null;

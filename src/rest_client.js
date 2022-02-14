@@ -1,9 +1,8 @@
 import { Base64 } from 'js-base64';
 import { restGet, restPost } from "./rest_lib";
 import { createAccessToken } from "./access_token";
-import {signAndBroadcast} from "./blockchain"
-const bs58 =  require("bs58")
-
+import { signAndBroadcast } from "./blockchain"
+import bs58 from 'bs58'
 const queryRoot = "/dbchain";
 
 ///////////////////////

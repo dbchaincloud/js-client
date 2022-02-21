@@ -70,8 +70,8 @@ export function createMasterKeyFromMnemonic (mnemonic, password) {
 export function createWalletFromMasterKey (masterKey, prefix = ADDRESS_PREFIX, path = DERIVATION_PATH) {
     const { privateKey, publicKey } = createKeyPairFromMasterKey(masterKey, path);
 
-    const address = createAddress(publicKey, prefix);
-    const ethAddress = createEthAddress(publicKey)
+    const address = createAddress(privateKey, prefix);
+    const ethAddress = createEthAddress(privateKey)
 
     return {
         privateKey,
@@ -106,13 +106,13 @@ export function createKeyPairFromMasterKey (masterKey, path = DERIVATION_PATH) {
 /**
  * Derive a Bech32 address from a public key.
  *
- * @param   publicKey - public key bytes
+ * @param   privateKey - private key bytes
  * @param   prefix    - Bech32 human readable part, defaulting to {@link ADDRESS_PREFIX|`ADDRESS_PREFIX`}
  *
  * @returns Bech32-encoded address
  */
-export function createAddress (publicKey, prefix = ADDRESS_PREFIX) {
-    const address = createEthAddress(publicKey)
+export function createAddress (privateKey, prefix = ADDRESS_PREFIX) {
+    const address = createEthAddress(privateKey)
     const hexTBytesAddress = hexToBytes(address.slice(2))
 
     const words = bech32ToWords(hexTBytesAddress);
@@ -122,10 +122,10 @@ export function createAddress (publicKey, prefix = ADDRESS_PREFIX) {
 
 /**
  * create ethAddress.
- * @param   publicKey - public key bytes
+ * @param   privateKey - private key bytes
 */
-export function createEthAddress(publicKey) {
-    const wallet = new ethers.Wallet(publicKey);
+export function createEthAddress(privateKey) {
+    const wallet = new ethers.Wallet(privateKey);
     return wallet.address
 }
 

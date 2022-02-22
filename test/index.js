@@ -1,9 +1,14 @@
-import { createAndStoreKey, savePassphrase, detectChain, createAccessToken } from "../index"
+import { createAndStoreKey, getAppCode,savePassphrase, detectChain, createAccessToken, getAccount, getAddress, addExtraMsgConstructors, signAndBroadcast as dbchainSignAndBroadcast } from "../index"
 import { getLocalStorage, getSessionStorage } from './utils'
-const mnemonic = 'fence weapon anchor pony mountain float later castle loop tragic embark outdoor'
-const password = '773387501long'
-const chainUrl = 'http://192.168.0.19:3001/relay'
-const chainNode = 'ethermint_9000-1'
+import { mnemonic, password, chainUrl, chainNode } from "./config";
+import { connectTendermint34, registryMessageType, signAndBroadcast, queryTransactionApi } from "../src/tx_factory/tendermintRpc"
+import { MsgCreateApplication } from "../protoc/output/msgs_application"
+import { toHex } from "@cosmjs/encoding";
+import { createApplication, createTable } from "../custom/res_client"
+import * as extraMsgConstructors from "../custom/extra_messages";
+
+addExtraMsgConstructors(extraMsgConstructors)
+import "./requestRPC"
 
 const createWalletID = document.getElementById('createWallet')
 
@@ -18,9 +23,7 @@ createWalletID.addEventListener('click', () => {
     console.table(walletTable);
 }, false)
 
-
 const savePassphraseId = document.getElementById('savePassphraseId')
-
 savePassphraseId.addEventListener('click', () => {
     savePassphrase(password)
     const passowrd = getSessionStorage('passphrase')
@@ -46,8 +49,43 @@ const createAccessTokenId = document.getElementById('createAccessTokenId')
 createAccessTokenId.addEventListener('click', () => {
     const accessToken = createAccessToken()
     console.log('accessToken:', accessToken);
-
 }, false)
 
 
+document.getElementById('txProId').addEventListener('click', async () => {
+    const tmClient = await connectTendermint34('192.168.0.19:36657')
+    registryMessageType('/dbchain.msgs.MsgCreateApplication', MsgCreateApplication)
+    const address = getAddress()
+    const message = {
+        messageTypeUrl: "/dbchain.msgs.MsgCreateApplication",
+        messageValue: {
+            owner: address,
+            name: "db",
+            description: "ZGI=",
+            permissionRequired: false
+        },
+        memo: "",
+        messageProtoBuf: MsgCreateApplication
+    }
+    const tx = await signAndBroadcast(address, message)
+    const result = await tmClient.broadcastTxAsync({ tx })
+    const transactionId = toHex(result.hash).toUpperCase();
+    setTimeout(() => {
+        queryTransactionApi(transactionId, tmClient).then(res => {
+            console.log(res);
+        })
+    }, 4000)
+})
 
+document.getElementById('sendTranId').addEventListener('click', async () => {
+    createApplication("db", "db", false, (res) => {
+        console.log(res);
+    })
+})
+document.getElementById('craeteTableTx').addEventListener('click', async () => {
+    const appCode = await getAppCode()
+    console.log(appCode);
+    createTable(appCode[0], "tables", (res) => {
+        console.log(res);
+    })
+})

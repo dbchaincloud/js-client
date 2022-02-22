@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { connectTendermint34 } from "./tx_factory/tendermintRpc"
 const baseUrlKey = "dbchain_base_url";
 const defaultBaseUrl = "/relay";
 var baseUrl = null;
@@ -31,7 +32,11 @@ async function restGet(url) {
 }
 
 async function restPost(url, data, config) {
-  return await axios.post(getBaseUrl() + url, data, config)
+  if(!window.TmClient){
+   const TmClient = await connectTendermint34("192.168.0.19:36657")
+   window.TmClient = TmClient
+  }
+  return await window.TmClient.broadcastTxSync({tx:data})
 }
 
 export { getBaseUrl, setBaseUrl, getIpfsUrl, restGet, restPost }

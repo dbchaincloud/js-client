@@ -1,7 +1,7 @@
-import { signTx } from "../ethdbchain_sig/index"
 import * as MessageConstructors from './messages'
 import { restGet, restPost } from '../rest_lib'
-import {uriBuilder } from "../rest_client"
+import { signAndBroadcast, queryTransactionApi } from "./tendermintRpc"
+import { toHex } from "@cosmjs/encoding";
 
 let cosmosMsgType = [
   'cosmos-sdk/MsgSend',
@@ -17,28 +17,22 @@ async function sleep(fn, ...args) {
 }
 
 async function txIncludedInBlock(txHash, isQueryCosmosMsgType) {
-  try {
-    var uri = isQueryCosmosMsgType ? `/txs/${txHash}` : uriBuilder("tx-simple-result", txHash);
-    let response = await restGet(uri)
-    if (isQueryCosmosMsgType) {
-      if (response.status >= 200 && response.status < 300) {
-        return true
-      } else {
-        return false
-      }
-    } else {
-      if (response.data.result.state == 'success') {
-        return true
-      }
-      if (response.data.result.state=='fail') {
-        return response
-      }
-      else {
-        return false
-      }
-    }
-  } catch(err) {
+  const txResult =  await queryTransactionApi(txHash)
+  if(txResult.txs.length === 0 && txResult.txs.total_count !== Number(0)){
     return false
+  }else{
+    return txResult.txs.map((tx) => {
+        return {
+              height: tx.height,
+              hash: toHex(tx.hash).toUpperCase(),
+              code: tx.result.code,
+              rawLog: tx.result.log || "",
+              tx: tx.tx,
+              gasUsed: tx.result.gasUsed,
+              gasWanted: tx.result.gasWanted,
+              
+          };
+      });
   }
 }
 
@@ -78,39 +72,33 @@ export default class Factory {
       })
   }
 
-  async getAccount() {
-    var account = await restGet(`/auth/accounts/${this.fromWallet.address}`)
-    return account.data.result.value
-  }
-
   async send(messages) {
-    var tx = {
-      fee: {
-        amount: [],
-        gas:    '99999999'
-      },
-      memo: '',
-      msg: messages
+    const fee = {
+      amount: [
+        {
+          denom: "aphoton",
+          amount: "100000",
+        },
+      ],
+      gas: "100000",
     };
-
-    var account = await this.getAccount()
-
-    const signMeta = {
-      chain_id:       this.chainId,
-      account_number: "" + account.account_number,
-      sequence:       "" + account.sequence
+    const wallet = {
+      privateKey: this.fromWallet.privateKey,
+      publicKey: this.fromWallet.publicKey,
+      address: this.fromWallet.address,
+      chainNode: this.chainId
     }
+    const broadcastBody = await signAndBroadcast(fee, messages, wallet)
+    const response = await restPost("/txs", broadcastBody)
+    if(response.code !== 0){
+      throw new Error(response.log)
+    }
+    const transactionId = toHex(response.hash).toUpperCase();
 
-    const signedTx = signTx(tx, signMeta, {privateKey: this.fromWallet.privateKey, publicKey: this.fromWallet.publicKey})
-
-    var broadcastBody = JSON.stringify({
-      tx: signedTx,
-      mode: 'async'
-    })
-
-    var response = await restPost("/txs", broadcastBody)
-    var txHash = response.data.txhash
-    var included = await queryTxInclusion(txHash, 15, isQueryCosmosMsgType(messages))
+    const included = await queryTxInclusion(transactionId, 15, isQueryCosmosMsgType(messages))
+    if(included[0].code !== 0){
+      throw new Error(included[0].rawLog)
+    }
     return included
   }
 }

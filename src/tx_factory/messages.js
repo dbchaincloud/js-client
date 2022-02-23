@@ -1,6 +1,6 @@
-import * as MsgsFriend from "./protoBuf/msgs_friend.ts"
-import * as MsgsData from "./protoBuf/msgs_data.ts"
-import * as MsgFunction from "./protoBuf/msgs_function.ts"
+import * as MsgsFriend from "./protoBuf/msgs_friend.js"
+import * as MsgsData from "./protoBuf/msgs_data.js"
+import * as MsgFunction from "./protoBuf/msgs_function.js"
 import {registryMessageType} from "./tendermintRpc.js"
 registryMessageType('/dbchain.msgs.MsgAddFriend', MsgsFriend.MsgAddFriend)
 registryMessageType('/dbchain.msgs.MsgDropFriend', MsgsFriend.MsgDropFriend)

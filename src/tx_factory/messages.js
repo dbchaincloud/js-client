@@ -1,3 +1,14 @@
+import * as MsgsFriend from "./protoc/msgs_friend.ts"
+import * as MsgsData from "./protoc/msgs_data.ts"
+import * as MsgFunction from "./protoc/msgs_function.ts"
+import {registryMessageType} from "./tendermintRpc.js"
+registryMessageType('/dbchain.msgs.MsgAddFriend', MsgsFriend.MsgAddFriend)
+registryMessageType('/dbchain.msgs.MsgDropFriend', MsgsFriend.MsgDropFriend)
+registryMessageType('/dbchain.msgs.MsgRespondFriend', MsgsFriend.MsgRespondFriend)
+registryMessageType('/dbchain.msgs.MsgInsertRow', MsgsData.MsgInsertRow)
+registryMessageType('/dbchain.msgs.MsgCallFunction', MsgFunction.MsgCallFunction)
+
+
 export function MsgAddFriend(
   senderAddress,
   {
@@ -7,13 +18,13 @@ export function MsgAddFriend(
   }
 ) {
   return {
-    type: "dbchain/AddFriend",
-    value: {
-      owner_name: myName,
-      friend_addr: friendAddr,
-      friend_name: friendName,
+    type: "/dbchain.msgs.MsgAddFriend",
+    value: MsgsFriend.MsgAddFriend.fromPartial({
+      ownerName: myName,
+      friendAddr: friendAddr,
+      friendName: friendName,
       owner: senderAddress
-    }
+    })
   }
 }
 
@@ -24,11 +35,11 @@ export function MsgDropFriend(
   }
 ) {
   return {
-    type: "dbchain/DropFriend",
-    value: {
-      friend_addr: friendAddr,
+    type: "/dbchain.msgs.MsgDropFriend",
+    value: MsgsFriend.MsgDropFriend.fromPartial({
+      friendAddr: friendAddr,
       owner: senderAddress
-    }
+    })
   }
 }
 
@@ -40,12 +51,12 @@ export function MsgRespondFriend(
   }
 ) {
   return {
-    type: "dbchain/RespondFriend",
-    value: {
-      friend_addr: friendAddr,
+    type: "/dbchain.msgs.MsgRespondFriend",
+    value: MsgsFriend.MsgRespondFriend.fromPartial({
+      friendAddr: friendAddr,
       action: action,
       owner: senderAddress
-    }
+    })
   }
 }
 
@@ -58,13 +69,13 @@ export function MsgInsertRow(
   }
 ) {
   return {
-    type: `dbchain/InsertRow`,
-    value: {
-      app_code: app_code,
-      table_name: table_name,
+    type: "/dbchain.msgs.MsgInsertRow",
+    value: MsgsData.MsgInsertRow.fromPartial({
+      appCode: app_code,
+      tableName: table_name,
       fields: fields,
       owner: senderAddress
-    }
+    })
   }
 }
 
@@ -90,13 +101,13 @@ export function MsgCallFunction(
   { appCode, function_name, argument }
 ) {
   return {
-    type: "dbchain/CallFunction",
-    value: {
-      app_code: appCode,
-      function_name,
+    type: "/dbchain.msgs.MsgCallFunction",
+    value:  MsgFunction.MsgCallFunction.fromPartial({
+      appCode: appCode,
+      functionName:function_name,
       argument,
       owner: senderAddress,
-    },
+    }),
   };
 }
 

@@ -3,4 +3,4 @@ dist/
 .cache/
 custom/
 yarn.lock/
-protoc/
+/protoc

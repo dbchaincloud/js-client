@@ -27,13 +27,18 @@ function getIpfsUrl(cid) {
   return url + cid
 }
 
+function httpConversionWs(url){
+    return "ws://"+ url.split('//')[1].split("/")[0]
+}
+
 async function restGet(url) {
   return await axios.get(getBaseUrl() + url)
 }
 
 async function restPost(url, data, config) {
   if(!window.TmClient){
-   const TmClient = await connectTendermint34("192.168.0.19:36657")
+   const baseUrl = getBaseUrl()
+   const TmClient = await connectTendermint34(httpConversionWs(baseUrl))
    window.TmClient = TmClient
   }
   return await window.TmClient.broadcastTxSync({tx:data})

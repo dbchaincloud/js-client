@@ -12,3 +12,4 @@ export * from './src/blockchain';
 export * from './src/querier';
 export * from './src/validate';
 export * from './src/access_token';
+export { registryMessageType } from "./src/tx_factory/tendermintRpc"

@@ -1,10 +1,10 @@
-import { createAndStoreKey, getAppCode,savePassphrase, detectChain, createAccessToken, getAccount, getAddress, addExtraMsgConstructors, signAndBroadcast as dbchainSignAndBroadcast } from "../index"
+import { createAndStoreKey, getAppCode, savePassphrase, detectChain, createAccessToken, getAccount, getAddress, addExtraMsgConstructors, signAndBroadcast as dbchainSignAndBroadcast } from "../index"
 import { getLocalStorage, getSessionStorage } from './utils'
 import { mnemonic, password, chainUrl, chainNode } from "./config";
 import { connectTendermint34, registryMessageType, signAndBroadcast, queryTransactionApi } from "../src/tx_factory/tendermintRpc"
 import { MsgCreateApplication } from "../protoc/output/msgs_application"
 import { toHex } from "@cosmjs/encoding";
-import { createApplication, createTable } from "../custom/res_client"
+import { createApplication, createTable, setDatabasePermission } from "../custom/res_client"
 import * as extraMsgConstructors from "../custom/extra_messages";
 
 addExtraMsgConstructors(extraMsgConstructors)
@@ -84,8 +84,13 @@ document.getElementById('sendTranId').addEventListener('click', async () => {
 })
 document.getElementById('craeteTableTx').addEventListener('click', async () => {
     const appCode = await getAppCode()
-    console.log(appCode);
-    createTable(appCode[0], "tables", (res) => {
+    createTable(appCode[0], "tabless", (res) => {
         console.log(res);
     })
+})
+document.getElementById('tableAuthId').addEventListener('click', async () => {
+    const appCode = await getAppCode()
+    setDatabasePermission(appCode[0], "unrequired", (res => {
+        console.log(res);
+    }))
 })

@@ -90,7 +90,7 @@ document.getElementById('craeteTableTx').addEventListener('click', async () => {
 })
 document.getElementById('tableAuthId').addEventListener('click', async () => {
     const appCode = await getAppCode()
-    setDatabasePermission(appCode[0], "unrequired", (res => {
+    setDatabasePermission(appCode[0], "required", (res => {
         console.log(res);
     }))
 })

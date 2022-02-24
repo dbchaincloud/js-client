@@ -1,7 +1,8 @@
 import * as MessageConstructors from './messages'
-import { restGet, restPost } from '../rest_lib'
+import { getBaseUrl, restGet, restPost } from '../rest_lib'
 import { signAndBroadcast, queryTransactionApi } from "./tendermintRpc"
 import { toHex } from "@cosmjs/encoding";
+import axios from 'axios'
 
 let cosmosMsgType = [
   'cosmos-sdk/MsgSend',
@@ -71,16 +72,37 @@ export default class Factory {
         }
       })
   }
+  
+  objectHumpToLine(obj) {
+    var newObj = new Object()
+    for (let key in obj) {
+        newObj[key.replace(/([A-Z])/g, "_$1").toLowerCase()] = obj[key]
+    }
+    return newObj
+  }
 
+  async calculateGas(messages){
+    const url = getBaseUrl() + "/dbchain/calculate_gas"
+    const objectHumpToLineMessage = messages.map(v =>(
+      v.typeUrl !== '/dbchain.msgs.MsgCreateApplication' ? {...v,value:this.objectHumpToLine(v.value)} : {...v}
+      ))
+    const jsonMessage = JSON.stringify(objectHumpToLineMessage)
+    return await axios.post(url,jsonMessage)
+  }
+  
   async send(messages) {
+    const calculateResult = await this.calculateGas(messages)
+    const { adjust_gas , minigas_prices } = calculateResult.data.result
+    
+    const amount = adjust_gas * 1.3 * Number(minigas_prices.split('.')[0])
     const fee = {
       amount: [
         {
           denom: "aphoton",
-          amount: "100000",
+          amount: String(amount),
         },
       ],
-      gas: "100000",
+      gas: String(adjust_gas),
     };
     const wallet = {
       privateKey: this.fromWallet.privateKey,
@@ -88,6 +110,7 @@ export default class Factory {
       address: this.fromWallet.address,
       chainNode: this.chainId
     }
+   
     const broadcastBody = await signAndBroadcast(fee, messages, wallet)
     const response = await restPost("/txs", broadcastBody)
     if(response.code !== 0){

@@ -18,7 +18,7 @@ export function MsgAddFriend(
   }
 ) {
   return {
-    type: "/dbchain.msgs.MsgAddFriend",
+    typeUrl: "/dbchain.msgs.MsgAddFriend",
     value: MsgsFriend.MsgAddFriend.fromPartial({
       ownerName: myName,
       friendAddr: friendAddr,
@@ -35,7 +35,7 @@ export function MsgDropFriend(
   }
 ) {
   return {
-    type: "/dbchain.msgs.MsgDropFriend",
+    typeUrl: "/dbchain.msgs.MsgDropFriend",
     value: MsgsFriend.MsgDropFriend.fromPartial({
       friendAddr: friendAddr,
       owner: senderAddress
@@ -51,7 +51,7 @@ export function MsgRespondFriend(
   }
 ) {
   return {
-    type: "/dbchain.msgs.MsgRespondFriend",
+    typeUrl: "/dbchain.msgs.MsgRespondFriend",
     value: MsgsFriend.MsgRespondFriend.fromPartial({
       friendAddr: friendAddr,
       action: action,
@@ -69,7 +69,7 @@ export function MsgInsertRow(
   }
 ) {
   return {
-    type: "/dbchain.msgs.MsgInsertRow",
+    typeUrl: "/dbchain.msgs.MsgInsertRow",
     value: MsgsData.MsgInsertRow.fromPartial({
       appCode: app_code,
       tableName: table_name,
@@ -87,7 +87,7 @@ export function MsgSend(
   }
 ) {
   return {
-    type: `cosmos-sdk/MsgSend`,
+    typeUrl: `cosmos-sdk/MsgSend`,
     value: {
       from_address: senderAddress,
       to_address: toAddress,
@@ -101,7 +101,7 @@ export function MsgCallFunction(
   { appCode, function_name, argument }
 ) {
   return {
-    type: "/dbchain.msgs.MsgCallFunction",
+    typeUrl: "/dbchain.msgs.MsgCallFunction",
     value:  MsgFunction.MsgCallFunction.fromPartial({
       appCode: appCode,
       functionName:function_name,

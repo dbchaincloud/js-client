@@ -99,7 +99,7 @@ export default class Factory {
       amount: [
         {
           denom: "aphoton",
-          amount: String(amount),
+          amount: String(parseInt(amount)),
         },
       ],
       gas: String(adjust_gas),

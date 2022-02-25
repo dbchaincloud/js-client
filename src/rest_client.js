@@ -219,17 +219,14 @@ async function getAccount(address) {
   if (address == null) {
     return null;
   }
-  var response = await restGet(`/auth/accounts/${address}`);
+  var response = await restGet(`/bank/balances/${address}`);
   var account;
   try {
-    account = response.data.result.value;
+    account = response.data.result[0];
   } catch (e) {
     return null;
   }
 
-  if (account.address == "") {
-    return null;
-  }
   return account;
 }
 

@@ -1,5 +1,5 @@
 import { Base64 } from 'js-base64';
-import { restGet, restPost } from "./rest_lib";
+import { restGet, uploadToIpfs } from "./rest_lib";
 import { createAccessToken } from "./access_token";
 import { signAndBroadcast } from "./blockchain"
 import bs58 from 'bs58'
@@ -309,7 +309,7 @@ async function uploadFile(file, appCode) {
     var uri = uriBuilder("upload", appCode);
     var formData = new FormData();
     formData.append('file', file);
-    var response = await restPost(
+    var response = await uploadToIpfs(
         uri,
         formData,
         {

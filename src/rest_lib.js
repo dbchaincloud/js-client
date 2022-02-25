@@ -44,4 +44,7 @@ async function restPost(url, data, config) {
   return await window.TmClient.broadcastTxSync({tx:data})
 }
 
-export { getBaseUrl, setBaseUrl, getIpfsUrl, restGet, restPost }
+async function uploadToIpfs(url, data, config){
+  return await axios.post(getBaseUrl() + url, data, config)
+}
+export { getBaseUrl, setBaseUrl, getIpfsUrl, restGet, restPost,uploadToIpfs }

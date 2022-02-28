@@ -1,6 +1,7 @@
 import * as MsgsFriend from "./protoBuf/msgs_friend.js"
 import * as MsgsData from "./protoBuf/msgs_data.js"
 import * as MsgFunction from "./protoBuf/msgs_function.js"
+import * as MegsSend from "./protoBuf/msgs_send.js"
 import {registryMessageType} from "./tendermintRpc.js"
 registryMessageType('/dbchain.msgs.MsgAddFriend', MsgsFriend.MsgAddFriend)
 registryMessageType('/dbchain.msgs.MsgDropFriend', MsgsFriend.MsgDropFriend)
@@ -87,12 +88,12 @@ export function MsgSend(
   }
 ) {
   return {
-    typeUrl: `cosmos-sdk/MsgSend`,
-    value: {
-      from_address: senderAddress,
-      to_address: toAddress,
+    typeUrl: "/bank.v1beta1.MsgSend",
+    value: MegsSend.MsgSend.fromPartial({
+      fromAddress: senderAddress,
+      toAddress: toAddress,
       amount: amounts.map(Coin)
-    }
+    })
   }
 }
 

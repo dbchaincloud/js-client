@@ -8,6 +8,7 @@ registryMessageType('/dbchain.msgs.MsgDropFriend', MsgsFriend.MsgDropFriend)
 registryMessageType('/dbchain.msgs.MsgRespondFriend', MsgsFriend.MsgRespondFriend)
 registryMessageType('/dbchain.msgs.MsgInsertRow', MsgsData.MsgInsertRow)
 registryMessageType('/dbchain.msgs.MsgCallFunction', MsgFunction.MsgCallFunction)
+registryMessageType('/bank.v1beta1.MsgSend', MegsSend.MsgSend)
 
 
 export function MsgAddFriend(

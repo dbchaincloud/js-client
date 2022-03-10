@@ -28,7 +28,8 @@ function getIpfsUrl(cid) {
 }
 
 function httpConversionWs(url){
-    return "ws://"+ url.split('//')[1].split("/")[0]
+    const wsProtocol = window.location.protocol == 'https:' ? "wss://" :"ws://";
+    return wsProtocol + url.split('//')[1].split("/")[0]
 }
 
 async function restGet(url) {

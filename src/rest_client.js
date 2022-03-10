@@ -241,7 +241,7 @@ async function sendToken(toAddress, amount, callback) {
         'MsgSend',
         {
             toAddress,
-            amounts: [{denom: 'dbctoken', amount: amount}]
+            amounts: [{denom: 'adbctoken', amount: amount}]
         },
         callback
     );

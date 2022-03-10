@@ -98,7 +98,7 @@ export default class Factory {
     const fee = {
       amount: [
         {
-          denom: "dbctoken",
+          denom: "adbctoken",
           amount: String(parseInt(amount)),
         },
       ],

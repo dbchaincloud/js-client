@@ -4,7 +4,7 @@ import { mnemonic, password, chainUrl, chainNode } from "./config";
 import { connectTendermint34, registryMessageType, signAndBroadcast, queryTransactionApi } from "../src/tx_factory/tendermintRpc"
 import { MsgCreateApplication } from "../protoc/output/msgs_application"
 import { toHex } from "@cosmjs/encoding";
-import { createApplication, createTable, setDatabasePermission } from "../custom/res_client"
+import { createApplication, createTable, setDatabasePermission } from "../custom/rest_client"
 import * as extraMsgConstructors from "../custom/extra_messages";
 
 addExtraMsgConstructors(extraMsgConstructors)

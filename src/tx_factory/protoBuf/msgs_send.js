@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Coin } from "dbchain-js-client/src/tx_factory/protoBuf/coin";
+import { Coin } from "./coin";
 export const protobufPackage = "bank.v1beta1";
 function createBaseMsgSend() {
     return { fromAddress: "", toAddress: "", amount: [] };

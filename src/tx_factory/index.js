@@ -87,14 +87,25 @@ export default class Factory {
       v.typeUrl !== '/dbchain.msgs.MsgCreateApplication' ? {...v,value:this.objectHumpToLine(v.value)} : {...v}
       ))
     const jsonMessage = JSON.stringify(objectHumpToLineMessage)
-    return await axios.post(url,jsonMessage)
+    try {
+      const calculateResult = await axios.post(url,jsonMessage)
+      const { adjust_gas , minigas_prices } = calculateResult.data.result
+      const amount = adjust_gas * 1.3 * Number(minigas_prices.split('.')[0])
+      return {
+        amount,
+        gas:adjust_gas
+      }
+    } catch (error) {
+      return {
+        amount:100000000,
+        gas:200000
+      }
+    }
+   
   }
   
   async send(messages) {
-    const calculateResult = await this.calculateGas(messages)
-    const { adjust_gas , minigas_prices } = calculateResult.data.result
-    
-    const amount = adjust_gas * 1.3 * Number(minigas_prices.split('.')[0])
+    const { amount, gas } = await this.calculateGas(messages)
     const fee = {
       amount: [
         {
@@ -102,7 +113,7 @@ export default class Factory {
           amount: String(parseInt(amount)),
         },
       ],
-      gas: String(adjust_gas),
+      gas: String(gas),
     };
     const wallet = {
       privateKey: this.fromWallet.privateKey,

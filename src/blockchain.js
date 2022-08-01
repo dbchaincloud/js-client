@@ -1,5 +1,5 @@
-import Factory from './tx_factory'
-import {getPrivKey, getPubKey, getAddress} from "./key_manager"
+import Factory from './tx_factory/index.js'
+import {getPrivKey, getPubKey, getAddress} from "./key_manager.js"
 
 const chainIdKey = "dbchain_chain_id";
 const defaultChainId = "testnet";

@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
-import { generateMnemonic, validateMnemonic as bip39ValidateMnemonic } from 'bip39'
-import  { createWalletFromMnemonic } from "./ethdbchain_sig/index"
+import { generateMnemonic, validateMnemonic as bip39ValidateMnemonic } from 'bip39';
+import  { createWalletFromMnemonic } from "./ethdbchain_sig/index.js";
 
 const PassphraseKey = 'passphrase'
 const StorageKey    = 'dbchainwallet'

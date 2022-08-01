@@ -1,15 +1,15 @@
-export { getBaseUrl, setBaseUrl, getIpfsUrl, restGet } from './src/rest_lib';
+export { getBaseUrl, setBaseUrl, getIpfsUrl, restGet } from './src/rest_lib.js';
 
 export { hasKey, hasPassphrase, savePassphrase, removePassphrase, newMnemonic,
          validateMnemonic, createAndStoreKey, getAddress
-       } from './src/key_manager';
+       } from './src/key_manager.js';
 
-export * from './src/rest_client';
-export * from './src/oracle';
-export * from './src/profile';
-export * from './src/friends';
-export * from './src/blockchain';
-export * from './src/querier';
-export * from './src/validate';
-export * from './src/access_token';
-export { registryMessageType } from "./src/tx_factory/tendermintRpc"
+export * from './src/rest_client.js';
+export * from './src/oracle.js';
+export * from './src/profile.js';
+export * from './src/friends.js';
+export * from './src/blockchain.js';
+export * from './src/querier.js';
+export * from './src/validate.js';
+export * from './src/access_token.js';
+export { registryMessageType } from './src/tx_factory/tendermintRpc.js';

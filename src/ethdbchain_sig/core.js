@@ -1,15 +1,12 @@
-import { mnemonicToSeedSync } from 'ethereum-cryptography/bip39'
-import * as secp from 'ethereum-cryptography/secp256k1'
-import { hexToBytes } from 'ethereum-cryptography/utils'
-import { HDKey } from 'ethereum-cryptography/hdkey'
+import { mnemonicToSeedSync } from 'ethereum-cryptography/bip39/index.js'
+import * as secp from 'ethereum-cryptography/secp256k1.js'
+import { hexToBytes } from 'ethereum-cryptography/utils.js'
+import { HDKey } from 'ethereum-cryptography/hdkey.js'
 import  * as ethers from 'ethers';
 import keccak256 from 'keccak256';
 
-import {
-    base64ToBytes,
-    bytesToBase64,
-    toCanonicalJSONBytes
-} from '@tendermint/belt';
+import tendermintBelt from '@tendermint/belt';
+const { base64ToBytes, bytesToBase64, toCanonicalJSONBytes } = tendermintBelt;
 
 import {
     encode as bech32Encode,
@@ -20,11 +17,11 @@ import {
     ADDRESS_PREFIX,
     DERIVATION_PATH,
     BROADCAST_MODE_SYNC
-} from './constants';
+} from './constants.js';
 
 import {
     sha256
-} from './hash';
+} from './hash.js';
 
 
 /**

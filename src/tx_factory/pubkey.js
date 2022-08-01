@@ -1,9 +1,22 @@
-const amino_1 = require("@cosmjs/amino");
-const encoding_1 = require("@cosmjs/encoding");
-const math_1 = require("@cosmjs/math");
-const keys_1 = require("cosmjs-types/cosmos/crypto/multisig/keys");
-const keys_2 = require("cosmjs-types/cosmos/crypto/secp256k1/keys");
-const any_1 = require("cosmjs-types/google/protobuf/any");
+//const amino_1 = require("@cosmjs/amino");
+import cosmjsAmino from "@cosmjs/amino";
+const {amino_1} = cosmjsAmino;
+
+import cosmjsEncoding from "@cosmjs/encoding";
+const { encoding_1 } = cosmjsEncoding;
+
+import cosmjsMath from "@cosmjs/math";
+const { math_1 } = cosmjsMath;
+
+import multisigKeys from "cosmjs-types/cosmos/crypto/multisig/keys.js";
+const { keys_1 } = multisigKeys;
+
+import secp256k1Keys from "cosmjs-types/cosmos/crypto/secp256k1/keys.js";
+const { keys_2 } = secp256k1Keys;
+
+import protobufAny from "cosmjs-types/google/protobuf/any.js";
+const { any_1 } = protobufAny;
+
 export function encodePubkey(pubkey) {
     if ((0, amino_1.isSecp256k1Pubkey)(pubkey)) {
         const pubkeyProto = keys_2.PubKey.fromPartial({

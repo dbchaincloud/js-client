@@ -1,7 +1,7 @@
 import { Base64 } from 'js-base64';
-import { restGet, uploadToIpfs } from "./rest_lib";
-import { createAccessToken } from "./access_token";
-import { signAndBroadcast } from "./blockchain"
+import { restGet, uploadToIpfs } from "./rest_lib.js";
+import { createAccessToken } from "./access_token.js";
+import { signAndBroadcast } from "./blockchain.js"
 import bs58 from 'bs58'
 const queryRoot = "/dbchain";
 

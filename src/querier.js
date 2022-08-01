@@ -1,5 +1,5 @@
-import { querier } from './rest_client'
-import { getAddress } from './key_manager'
+import { querier } from './rest_client.js'
+import { getAddress } from './key_manager.js'
 
 const handler = {
   get: function(target, prop) {

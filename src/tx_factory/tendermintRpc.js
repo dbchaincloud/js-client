@@ -4,11 +4,11 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import * as crypto from '@cosmjs/crypto'
 import * as amino from '@cosmjs/amino'
 import * as encoding from "@cosmjs/encoding";
-import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import { encodeSecp256k1Pubkey } from "@cosmjs/amino";
-import { encodePubkey } from "./pubkey"
+import { encodePubkey } from "./pubkey.js"
 import { Int53 } from "@cosmjs/math";
-import { restGet } from '../../src/rest_lib'
+import { restGet } from '../../src/rest_lib.js'
 import {
     makeAuthInfoBytes,
     makeSignDoc,

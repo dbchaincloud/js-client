@@ -1,6 +1,6 @@
-import * as MessageConstructors from './messages'
-import { getBaseUrl, restGet, restPost } from '../rest_lib'
-import { signAndBroadcast, queryTransactionApi } from "./tendermintRpc"
+import * as MessageConstructors from './messages.js'
+import { getBaseUrl, restGet, restPost } from '../rest_lib.js'
+import { signAndBroadcast, queryTransactionApi } from "./tendermintRpc.js"
 import { toHex } from "@cosmjs/encoding";
 import axios from 'axios'
 

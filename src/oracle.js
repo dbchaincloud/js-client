@@ -1,5 +1,5 @@
-import { restGet } from "./rest_lib";
-import { createAccessToken } from "./access_token";
+import { restGet } from "./rest_lib.js";
+import { createAccessToken } from "./access_token.js";
 
 const queryRoot = "/dbchain/oracle";
 

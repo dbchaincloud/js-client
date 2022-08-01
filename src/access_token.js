@@ -1,5 +1,5 @@
-import { sign } from "./ethdbchain_sig/index"
-import { getPrivKey, getPubKey } from "./key_manager";
+import { sign } from "./ethdbchain_sig/index.js"
+import { getPrivKey, getPubKey } from "./key_manager.js";
 import bs58 from 'bs58'
 
 

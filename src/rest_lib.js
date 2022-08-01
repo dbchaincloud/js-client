@@ -5,7 +5,11 @@ const defaultBaseUrl = "/relay";
 var baseUrl = null;
 
 function setBaseUrl(url) {
-  localStorage.setItem(baseUrlKey, url);
+  try {
+    localStorage.setItem(baseUrlKey, url);
+  } catch(e) {
+    // do nothing, we're in node env
+  }
   baseUrl = url;
 }
 
@@ -13,7 +17,12 @@ function getBaseUrl() {
   if (baseUrl != null) {
     return baseUrl;
   }
-  baseUrl = localStorage.getItem(baseUrlKey) || defaultBaseUrl;
+
+  try {
+    baseUrl = localStorage.getItem(baseUrlKey) || defaultBaseUrl;
+  } catch(e) {
+    // do nothing, we're in node env
+  }
   return baseUrl;
 }
 

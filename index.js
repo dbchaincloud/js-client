@@ -12,4 +12,6 @@ export * from './src/blockchain.js';
 export * from './src/querier.js';
 export * from './src/validate.js';
 export * from './src/access_token.js';
+
 export { registryMessageType } from './src/tx_factory/tendermintRpc.js';
+export { createWalletFromMnemonic } from "./src/ethdbchain_sig/core.js";

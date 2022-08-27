@@ -9,18 +9,28 @@ var ExtraMsgConstructors = []
 var LazyFactory = null
 var MsgQueue = []
 var Mutex = true
+var Wallet = {}
 
 function setChainId(id) {
+  try {
     localStorage.setItem(chainIdKey, id)
-    chainId = id
+  } catch(e) {
+    // do nothing, we're in node env
+  }
+  chainId = id
 }
 
 function getChainId() {
-    if (chainId != null) {
-        return chainId
-    }
-    chainId = localStorage.getItem(chainIdKey) || defaultChainId
+  if (chainId != null) {
     return chainId
+  }
+  try {
+    chainId = localStorage.getItem(chainIdKey) || defaultChainId
+  } catch(e) {
+    // we're in node env
+    chainId = defaultChainId
+  }
+  return chainId
 }
 
 function resetLazyFactory(){
@@ -31,12 +41,22 @@ function addExtraMsgConstructors(module) {
     ExtraMsgConstructors = ExtraMsgConstructors.concat(Object.entries(module))
 }
 
-function getWallet() {
-    var privateKey = getPrivKey()
-    var publicKey  = getPubKey()
-    var address    = getAddress()
+function setWallet(priv, pub, addr) {
+  Wallet.privateKey = priv;
+  Wallet.publicKey  = pub;
+  Wallet.address    = addr;
+}
 
-    return {privateKey, publicKey, address}
+function getWallet() {
+  try {
+    var privateKey = getPrivKey();
+    var publicKey  = getPubKey();
+    var address    = getAddress();
+  } catch(e) {
+    // we're in node env
+    return(Wallet);
+  }
+  return {privateKey, publicKey, address};
 }
 
 async function work() {
@@ -104,4 +124,4 @@ async function realSignAndBroadcast(batch) { //msgName, args, callback) {
     if(typeof(callback) == "function") { callback(included) }
 }
 
-export { signAndBroadcast, addExtraMsgConstructors, getChainId, setChainId, resetLazyFactory}
+export { signAndBroadcast, addExtraMsgConstructors, getChainId, setChainId, resetLazyFactory, setWallet, getWallet}

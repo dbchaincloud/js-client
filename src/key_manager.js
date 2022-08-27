@@ -108,5 +108,6 @@ function getAddress() {
 
 
 export { hasKey, hasPassphrase, savePassphrase, removePassphrase, newMnemonic,
-         validateMnemonic, createAndStoreKey, getPrivKey, getPubKey, getAddress }
+         validateMnemonic, createAndStoreKey, getPrivKey, getPubKey, getAddress,
+         createWalletFromMnemonic }
 

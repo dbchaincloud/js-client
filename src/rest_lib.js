@@ -37,8 +37,11 @@ function getIpfsUrl(cid) {
 }
 
 function httpConversionWs(url){
-    const wsProtocol = window.location.protocol == 'https:' ? "wss://" :"ws://";
-    return wsProtocol + url.split('//')[1].split("/")[0];
+  let parts = url.split("://");
+  let protocol = parts[0].toLowerCase();
+
+  const wsProtocol = (protocol == 'https:')? "wss://" : "ws://";
+  return wsProtocol + url.split('//')[1].split("/")[0];
 }
 
 async function restGet(url) {

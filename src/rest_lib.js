@@ -49,15 +49,25 @@ async function restGet(url) {
 }
 
 async function restPost(url, data, config) {
-  if(!window.TmClient){
-   const baseUrl = getBaseUrl();
-   const TmClient = await connectTendermint34(httpConversionWs(baseUrl));
-   window.TmClient = TmClient;
+  try {
+    if(!window.TmClient){
+      let baseUrl = getBaseUrl();
+      const TmClient = await connectTendermint34(httpConversionWs(baseUrl));
+      window.TmClient = TmClient;
+    }
+    return await window.TmClient.broadcastTxSync({tx:data});
+  } catch(e) {
+    if(!global.TmClient){
+      let baseUrl = getBaseUrl();
+      const TmClient = await connectTendermint34(httpConversionWs(baseUrl));
+      global.TmClient = TmClient;
+    }
+    return await global.TmClient.broadcastTxSync({tx:data});
   }
-  return await window.TmClient.broadcastTxSync({tx:data});
 }
 
 async function uploadToIpfs(url, data, config){
   return await axios.post(getBaseUrl() + url, data, config);
 }
+
 export { getBaseUrl, setBaseUrl, getIpfsUrl, restGet, restPost, uploadToIpfs }

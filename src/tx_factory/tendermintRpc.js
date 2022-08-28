@@ -98,8 +98,12 @@ async function signDirect(signDoc, { privateKey, publicKey }) {
 }
 
 export async function queryTransactionApi(transactionId) {
-
-    return await window.TmClient.txSearchAll({ query: `tx.hash='${transactionId}'` })
-
+    let tmClient = null;
+    try {
+      tmClient = window.TmClient
+    } catch(e) {
+      tmClient = global.TmClient
+    }
+    return await tmClient.txSearchAll({ query: `tx.hash='${transactionId}'` })
 }
 

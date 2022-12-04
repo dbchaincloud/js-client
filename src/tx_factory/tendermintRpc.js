@@ -50,7 +50,7 @@ async function sign(fee, message, { privateKey, publicKey, address, chainNode })
         typeUrl: "/cosmos.tx.v1beta1.TxBody",
         value: {
             messages: message,
-            memo: "",
+            memo: "chain_id:" + chainNode,
         },
     };
     const signerData = await getAccount(address)

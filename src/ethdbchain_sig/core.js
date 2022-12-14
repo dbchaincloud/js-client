@@ -5,8 +5,7 @@ import { HDKey } from 'ethereum-cryptography/hdkey.js'
 import  * as ethers from 'ethers';
 import keccak256 from 'keccak256';
 
-import tendermintBelt from '@tendermint/belt';
-const { base64ToBytes, bytesToBase64, toCanonicalJSONBytes } = tendermintBelt;
+import { base64ToBytes, bytesToBase64, toCanonicalJSONBytes } from '@tendermint/belt';
 
 import {
     encode as bech32Encode,

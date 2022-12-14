@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { connectTendermint34 } from "./tx_factory/tendermintRpc.js";
+import { getChainId } from './blockchain.js';
 const baseUrlKey = "dbchain_base_url";
 const defaultBaseUrl = "/relay";
 var baseUrl = null;
@@ -45,7 +46,12 @@ function httpConversionWs(url){
 }
 
 async function restGet(url) {
-  return await axios.get(getBaseUrl() + url);
+  let chainID = getChainId();
+  return await axios.get(getBaseUrl() + url, {
+    headers: {
+      'X-DBC-ChainID': chainID
+    }
+  });
 }
 
 async function restPost(url, data, config) {

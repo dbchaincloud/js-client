@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { connectTendermint34 } from "./tx_factory/tendermintRpc.js";
-import { getChainId } from './blockchain.js';
+import { getChainId } from './chain_id.js';
 const baseUrlKey = "dbchain_base_url";
 const defaultBaseUrl = "/relay";
 var baseUrl = null;
@@ -55,21 +55,25 @@ async function restGet(url) {
 }
 
 async function restPost(url, data, config) {
-  try {
-    if(!window.TmClient){
-      let baseUrl = getBaseUrl();
-      const TmClient = await connectTendermint34(httpConversionWs(baseUrl));
-      window.TmClient = TmClient;
+    let tmClient;
+    try {
+        if(!window.TmClient){
+            let baseUrl = getBaseUrl();
+            tmClient = await connectTendermint34(httpConversionWs(baseUrl));
+            window.TmClient = tmClient;
+        } else {
+            tmClient = window.TmClient;
+        }
+    } catch(e) {
+        if(!global.TmClient){
+            let baseUrl = getBaseUrl();
+            tmClient = await connectTendermint34(httpConversionWs(baseUrl));
+            global.TmClient = tmClient;
+        } else {
+            tmClient = global.TmClient;
+        }
     }
-    return await window.TmClient.broadcastTxSync({tx:data});
-  } catch(e) {
-    if(!global.TmClient){
-      let baseUrl = getBaseUrl();
-      const TmClient = await connectTendermint34(httpConversionWs(baseUrl));
-      global.TmClient = TmClient;
-    }
-    return await global.TmClient.broadcastTxSync({tx:data});
-  }
+    return await tmClient.broadcastTxSync({tx:data});
 }
 
 async function uploadToIpfs(url, data, config){

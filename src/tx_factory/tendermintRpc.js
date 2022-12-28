@@ -1,6 +1,8 @@
 
 // import axios from 'axios'
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { HttpClient, WebsocketClient } from "@cosmjs/tendermint-rpc";
+import { QueueingStreamingSocket } from "@cosmjs/socket";
 import * as crypto from '@cosmjs/crypto'
 import * as amino from '@cosmjs/amino'
 import * as encoding from "@cosmjs/encoding";
@@ -9,6 +11,7 @@ import { encodeSecp256k1Pubkey } from "@cosmjs/amino";
 import { encodePubkey } from "./pubkey.js"
 import { Int53 } from "@cosmjs/math";
 import { restGet } from '../../src/rest_lib.js'
+import { getChainId } from '../chain_id.js';
 import {
     makeAuthInfoBytes,
     makeSignDoc,
@@ -26,6 +29,70 @@ export function registryMessageType(url, value) {
     myRegistry.register(url, value)
 }
 
+//////////////////////////////////////////////////////////////////////
+// monkey patch of method execute in HttpClient and WebsocketClient //
+//////////////////////////////////////////////////////////////////////
+
+// The purpose of the monkey patching is to add chainId into jsonrpc params
+(function() {
+    let originalHttpExecute = HttpClient.prototype.execute
+    let myHttpExecute = function(request) {
+        let params = request.params;
+        let chainId = getChainId();
+        params.chain_id = chainId;
+        request.params = params;
+        return originalHttpExecute.call(this, request);
+    };
+
+    let originalWsExecute = WebsocketClient.prototype.execute
+    let myWsExecute = function(request) {
+        let params = request.params;
+        let chainId = getChainId();
+        params.chain_id = chainId;
+        request.params = params;
+        return originalWsExecute.call(this, request);
+    };
+
+    HttpClient.prototype.execute = myHttpExecute;
+    WebsocketClient.prototype.execute = myWsExecute;
+})();
+/////////////////////////////////////////////////////////////////////////////
+// end of monkey patch of method execute in HttpClient and WebsocketClient //
+/////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////
+// monkey patch of QueueingStreamingSocket //
+ ////////////////////////////////////////////
+
+// The purpose of the monkey patching is to fix a bug which may cause the isProcessingQueue
+// to be true when entering the function of processQueue, so it won't process future requests
+// in the queue
+(function() {
+    let myProcessQueue = async function() {
+        if (this.isProcessingQueue || this.connectionStatus.value !== 2) {
+            return;
+        }
+        this.isProcessingQueue = true;
+        let request;
+        while ((request = this.queue.shift())) {
+            try {
+                await this.socket.send(request);
+            }
+            catch (error) {
+                // Probably the connection is down; will try again automatically when reconnected.
+                this.queue.unshift(request);
+                this.isProcessingQueue = false;
+                return;
+            }
+        }
+        this.isProcessingQueue = false;
+    };
+
+    QueueingStreamingSocket.prototype.processQueue = myProcessQueue;
+})();
+////////////////////////////////////////////////////
+// end of monkey patch of QueueingStreamingSocket //
+////////////////////////////////////////////////////
 
 export async function connectTendermint34(url) {
     return await Tendermint34Client.connect(url)

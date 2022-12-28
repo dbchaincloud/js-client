@@ -1,37 +1,13 @@
-import Factory from './tx_factory/index.js'
+import {getChainId} from './chain_id.js'
+import {Factory} from './tx_factory/index.js'
 import {getPrivKey, getPubKey, getAddress} from "./key_manager.js"
 
-const chainIdKey = "dbchain_chain_id";
-const defaultChainId = "testnet";
-var chainId = null
 
 var ExtraMsgConstructors = []
 var LazyFactory = null
 var MsgQueue = []
 var Mutex = true
 var Wallet = {}
-
-function setChainId(id) {
-  try {
-    localStorage.setItem(chainIdKey, id)
-  } catch(e) {
-    // do nothing, we're in node env
-  }
-  chainId = id
-}
-
-function getChainId() {
-  if (chainId != null) {
-    return chainId
-  }
-  try {
-    chainId = localStorage.getItem(chainIdKey) || defaultChainId
-  } catch(e) {
-    // we're in node env
-    chainId = defaultChainId
-  }
-  return chainId
-}
 
 function resetLazyFactory(){
     LazyFactory=null;
@@ -124,4 +100,4 @@ async function realSignAndBroadcast(batch) { //msgName, args, callback) {
     if(typeof(callback) == "function") { callback(included) }
 }
 
-export { signAndBroadcast, addExtraMsgConstructors, getChainId, setChainId, resetLazyFactory, setWallet, getWallet}
+export { signAndBroadcast, addExtraMsgConstructors, resetLazyFactory, setWallet, getWallet}

@@ -1,6 +1,6 @@
 import cids from 'cids';
 const {CID} = cids;
-import { setChainId, getChainId } from './blockchain.js';
+import { setChainId, getChainId } from './chain_id.js';
 import { getBaseUrl, setBaseUrl } from './rest_lib.js';
 import { checkChainId} from "./rest_client.js"
 /**

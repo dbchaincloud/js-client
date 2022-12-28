@@ -9,6 +9,7 @@ export * from './src/oracle.js';
 export * from './src/profile.js';
 export * from './src/friends.js';
 export * from './src/blockchain.js';
+export * from './src/chain_id.js';
 export * from './src/querier.js';
 export * from './src/validate.js';
 export * from './src/access_token.js';

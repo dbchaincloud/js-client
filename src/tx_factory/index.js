@@ -2,6 +2,7 @@ import * as MessageConstructors from './messages.js'
 import { getBaseUrl, restGet, restPost } from '../rest_lib.js'
 import { signAndBroadcast, queryTransactionApi } from "./tendermintRpc.js"
 import { toHex } from "@cosmjs/encoding";
+import { getChainId } from '../chain_id.js';
 import axios from 'axios'
 
 let cosmosMsgType = [
@@ -54,7 +55,7 @@ async function queryTxInclusion (txHash, iterations = 15, isQueryCosmosMsgType =
   return result
 }
 
-export default class Factory {
+export class Factory {
   constructor (chainId, fromWallet, extraMsgConstructorList=[]) {
     this.chainId     = chainId
     this.fromWallet = fromWallet
@@ -88,7 +89,11 @@ export default class Factory {
       ))
     const jsonMessage = JSON.stringify(objectHumpToLineMessage)
     try {
-      const calculateResult = await axios.post(url,jsonMessage)
+      const calculateResult = await axios.post(url, jsonMessage, {
+          headers: {
+              'X-DBC-ChainID': getChainId(),
+          }
+      })
       const { adjust_gas , minigas_prices } = calculateResult.data.result
       const amount = adjust_gas * 1.3 * Number(minigas_prices.split('.')[0])
       return {

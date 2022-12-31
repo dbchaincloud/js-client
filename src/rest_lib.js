@@ -21,6 +21,10 @@ function getBaseUrl() {
 
   try {
     baseUrl = localStorage.getItem(baseUrlKey) || defaultBaseUrl;
+    if (baseUrl[0] == '/') {
+      let loc = window.location;
+      baseUrl = loc.protocol + "//" + loc.host + baseUrl;
+    }
   } catch(e) {
     // do nothing, we're in node env
   }
